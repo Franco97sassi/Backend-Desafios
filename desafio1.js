@@ -44,3 +44,11 @@ console.log(product);
 const productNotFound=manager.getProductsById(0);
 console.log(productNotFound);
 
+const fs=require("fs");
+const fillname= "productos.txt";
+const obj=manager
+
+fs.writeFileSync(fillname,JSON.stringify(obj,null,"\t"))
+const contenido=JSON.parse(fs.readFileSync(fillname,"utf-8"))
+contenido.precio=1000
+fs.writeFileSync(fillname,JSON.stringify(contenido,null,"\t"))

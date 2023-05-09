@@ -1,0 +1,23 @@
+{
+	"products": [
+		{
+			"id": 1,
+			"title": "Motorola G22",
+			"descripcion": "Tamaño de la pantalla: 6.5...",
+			"price": 67000,
+			"thumbnail": "https://i.imgur.com/EsxY88d.jpg",
+			"code": 1234,
+			"stock": 7
+		},
+		{
+			"id": 2,
+			"title": "Tablet Samsung A8",
+			"descripcion": "Sistema operativo: Android...",
+			"price": 112000,
+			"thumbnail": "https://i.imgur.com/365TQnk.jpg",
+			"code": 5678,
+			"stock": 10
+		}
+	],
+	"precio": 1000
+}
