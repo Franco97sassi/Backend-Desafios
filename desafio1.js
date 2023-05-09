@@ -44,6 +44,7 @@ console.log(product);
 const productNotFound=manager.getProductsById(0);
 console.log(productNotFound);
 
+//desafio2
 const fs=require("fs");
 const fillname= "productos.txt";
 const obj=manager
