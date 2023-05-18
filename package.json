@@ -1,21 +1,17 @@
 {
-   "type": "module",
-  "name": "desafio2",
+  "type": "module",
+  "name": "desafio3",
   "version": "1.0.0",
   "description": "",
-  "main": "desafio1.js",
+  "main": "ProductManager.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Franco97sassi/Backend-Desafio1.git"
+     "start": "node src/app.js",
+      "dev": "nodemon src/app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Franco97sassi/Backend-Desafio1/issues"
-  },
-  "homepage": "https://github.com/Franco97sassi/Backend-Desafio1#readme"
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }

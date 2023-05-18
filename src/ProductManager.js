@@ -36,7 +36,7 @@ class ProductManager {
         if (!idProduct) {
             console.log("No se encontro el producto")
         } else {
-            return console.log(idProduct);
+            return  idProduct;
         }
     }
 
@@ -45,10 +45,10 @@ class ProductManager {
         let indice = products.findIndex(product => product.id === id)
         if (indice !== -1) {
             products[indice].title = product.title;
-            products[indice].descripcion = product.descripcion;
+             products[indice].descripcion = product.descripcion;
             products[indice].price = product.price;
-            products[indice].code = product.code;
-            products[indice].stock = product.stock;
+              products[indice].code = product.code;
+              products[indice].stock = product.stock;
 
         }
         await fs.promises.writeFile(this.path, JSON.stringify(products))
@@ -71,9 +71,8 @@ class ProductManager {
 //Testing
 
 const manager = new ProductManager()
-
-// let arregloVacio = await manager.getProducts()
-// console.log(arregloVacio);
+//    let arregloVacio = await manager.getProducts()
+//   console.log(arregloVacio);
 
 
 let product1 = {
@@ -88,7 +87,7 @@ let product1 = {
 
 let product2 = {
     "id": await manager.generateId(),
-    "title": "Tablet Samsung A8",
+    "title": " aTablet Samsung A8",
     "descripcion": "Sistema operativo: Android...",
     "price": 112000,
     "thumbnail": "https://i.imgur.com/365TQnk.jpg",
@@ -96,21 +95,24 @@ let product2 = {
     "stock": 10
 }
 
-  await manager.addProduct(product1)
- await manager.addProduct(product2)
+    //   await manager.addProduct(product1)
+//    await manager.addProduct(product2)
 
-// let productoAgregado = await manager.getProducts()
-// console.log(productoAgregado);
+//  let productoAgregado = await manager.getProducts()
+//  console.log(productoAgregado);
 
-// let buscarPorId = await manager.getProductsById(1)
-// console.log(buscarPorId);
+//   let buscarPorId = await manager.getProductsById(1)
+//   console.log(buscarPorId);
+
 // let buscarPorId2 = await manager.getProductsById(3)
 // console.log(buscarPorId2);
 
 
-// let productoActualizado = await manager.updateProducts(1, product1)
-// console.log(productoActualizado);
+    //   let productoActualizado = await manager.updateProducts(2, product2)
+    //  console.log(productoActualizado);
 
 
 // let productoEliminado = await manager.deleteProducts(1)
 // console.log(productoEliminado);
+
+export default ProductManager;
