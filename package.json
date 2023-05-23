@@ -1,12 +1,12 @@
 {
   "type": "module",
-  "name": "desafio3",
+  "name": "preentrega1",
   "version": "1.0.0",
   "description": "",
-  "main": "ProductManager.js",
+  "main": "app.js",
   "scripts": {
-     "start": "node src/app.js",
-      "dev": "nodemon src/app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",

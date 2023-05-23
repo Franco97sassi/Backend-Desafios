@@ -3,9 +3,9 @@ import fs from 'fs';
 class ProductManager {
     constructor() {
         this.path = "products.json"
-         
+
     }
-     
+
     async generateId(){
         let products = await this.getProducts()
         return    products.length + 1
@@ -15,13 +15,7 @@ class ProductManager {
         products.push(product);
         console.log("se agrego el producto");
         await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"))
-        // if(!title|| !descripcion || !price || !thumbnail || !code || !stock){
-        //     return console.log("Faltan datos")
-        // }
-        // if(this.products.some(elem=>elem.code==code)){
-        //     return console.log( `Codigo ${code} repetido` )
-        // }
-        // this.products.push(product);
+
     }
 
     async getProducts() {
@@ -49,6 +43,8 @@ class ProductManager {
             products[indice].price = product.price;
               products[indice].code = product.code;
               products[indice].stock = product.stock;
+              products[indice].category = product.code;
+              products[indice].status = product.status;
 
         }
         await fs.promises.writeFile(this.path, JSON.stringify(products))
@@ -67,52 +63,5 @@ class ProductManager {
     }
 }
 
-
-//Testing
-
-const manager = new ProductManager()
-//    let arregloVacio = await manager.getProducts()
-//   console.log(arregloVacio);
-
-
-let product1 = {
-    "id": await manager.generateId(),
-    "title": "Ipad G22",
-    "descripcion": "Tamaño de la pantalla: 6.5...",
-    "price": 67000,
-    "thumbnail": "https://i.imgur.com/EsxY88d.jpg",
-    "code": 1234,
-    "stock": 7
-}
-
-let product2 = {
-    "id": await manager.generateId(),
-    "title": " aTablet Samsung A8",
-    "descripcion": "Sistema operativo: Android...",
-    "price": 112000,
-    "thumbnail": "https://i.imgur.com/365TQnk.jpg",
-    "code": 5678,
-    "stock": 10
-}
-
-    //   await manager.addProduct(product1)
-//    await manager.addProduct(product2)
-
-//  let productoAgregado = await manager.getProducts()
-//  console.log(productoAgregado);
-
-//   let buscarPorId = await manager.getProductsById(1)
-//   console.log(buscarPorId);
-
-// let buscarPorId2 = await manager.getProductsById(3)
-// console.log(buscarPorId2);
-
-
-    //   let productoActualizado = await manager.updateProducts(2, product2)
-    //  console.log(productoActualizado);
-
-
-// let productoEliminado = await manager.deleteProducts(1)
-// console.log(productoEliminado);
 
 export default ProductManager;
