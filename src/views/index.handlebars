@@ -1,0 +1,22 @@
+<section>
+    <h1 class="text-center py-5 text-light">Productos:</h1>
+    <div class="container">
+        <div class="row justify-content-around">
+            {{#each products}}
+            <div class="col-4">
+                <div class="card border border-3">
+                    <div class="card-body text-center">
+                        <h3 class="card-title fs-4">{{this.title}}</h3>
+                        <p class="card-text ">{{this.description}}</p>
+                        <p class="card-text fs-6 fw-bold">Precio:${{this.price}}</p>
+                        <p class="card-text fs-6 fw-bold">Codigo: {{this.code}}</p>
+                        <p class="card-text fs-6 fw-bold">Stock: {{this.stock}}</p>
+                        <p class="card-text fs-6 fw-bold">Categoria: {{this.category}}</p>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+</section>

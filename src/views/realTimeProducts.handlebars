@@ -1,0 +1,54 @@
+<div class="container-sm mt-3 d-flex justify-content-between">
+  <div class="me-5">
+    <h2 class="text-light">Ingrese un Producto:</h2>
+    <form class="row g-3 formulario align-items-center">
+      <div class="col-md-4">
+        <label for="" class="form-label text-light">Title:</label>
+        <input type="text" class="form-control" id="title" required>
+      </div>
+      <div class="col-md-4">
+        <label for="" class="form-label text-light">Description:</label>
+        <input type="text" class="form-control" id="description" required>
+      </div>
+      <div class="col-md-4">
+        <label for="" class="form-label text-light">Price:</label>
+        <input type="text" class="form-control" id="price" required>
+      </div>
+      <div class="col-md-4">
+        <label for="" class="form-label text-light">Code:</label>
+        <input type="text" class="form-control" id="code" required>
+      </div>
+      <div class="col-md-4">
+        <label for="" class="form-label text-light">Stock:</label>
+        <input type="text" class="form-control" id="stock" required>
+      </div>
+      <div class="col-md-4">
+        <label for="" class="form-label text-light">Category:</label>
+        <input type="text" class="form-control" id="category" required>
+      </div>
+      <div class="col-12">
+        <button class="btn btn-success" type="submit" id="btnAgregar">Enviar</button>
+      </div>
+    </form>
+  </div>
+  
+  <div>
+    <h2 class="text-light">Eliminar Producto</h2>
+    <form class="row g-3 formulario align-items-center">
+      <div class="col-md-4">
+        <label for="" class="form-label text-light">Ingrese el ID:</label>
+        <input type="text" class="form-control" id="socketId" required>
+      </div>
+      <div class="col-12">
+        <button class="btn btn-danger" type="submit" id="btnEliminar">Eliminar</button>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<div class="container d-flex gap-3 mb-3" id="productos">
+  </div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/index.js"></script>

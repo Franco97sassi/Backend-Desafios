@@ -1,17 +1,18 @@
 {
   "type": "module",
-  "name": "preentrega1",
+  "name": "primerpreentrega",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "express-handlebars": "^7.0.7",
+    "socket.io": "^4.6.2"
   }
 }

@@ -1,61 +1,54 @@
-import {Router} from 'express';
-import ProductManager from  '../datos/productManager.js';
- import { validateProduct}from '../utils/index.js';
-const productRouter = Router();
- 
- 
-let manager=new ProductManager();
+import { Router } from "express";
+import ProductManager from "../Managers/ProductManager.js";
+import { validate } from "../utils/validate.js";
 
-//punto1
+const ProductsRouter = Router();
 
-productRouter.get('/',async (req, res) => {
-    let productos=await manager.getProducts();
-    let {limit}=req.query;
-    let limitProducts=limit ? productos.slice(0,limit):productos;
+let manager = new ProductManager;
+
+ProductsRouter.get("/", async(req, res)=>{
+    let products = await manager.getProducts()
+    let { limit } = req.query;
+    let limitProducts = limit ? products.slice(0, limit) : products
     res.send(limitProducts)
+});
+
+ProductsRouter.get("/:pid", async (req, res)=>{
+    let pid = req.params.pid;
+    let product = await manager.getProductByid(pid);
+    if(!product){
+        res.status(400).send({ status: "error", msg: "Product not found" })
+    }
+    res.send(product)
+});
+
+ProductsRouter.post("/", async (req, res)=>{
+    let product = req.body;
+    product.id = await manager.generateId();
+    product.status = true
+    if(!validate(product)){
+        res.status(400).send({ status: "error", msg: "Invalid Product" })
+    }
+    await manager.addProduct(product);
+    res.send({ status: "success", msg: "Added Product"})
+});
+
+ProductsRouter.put("/:pid", async(req, res)=>{
+    let pid = req.params.pid;
+    let newProduct = req.body;
+    let productUpdate = await manager.updateProduct(pid, newProduct);
+    if (!productUpdate) {
+        res.status(400).send({ status: "error", msg: "Product cannot be updated!" })
+    }
+    res.send({ status: "success", msg: "Updated Product"})
 })
-productRouter.get('/:pid' ,async(req,res)=>{
-    let pid =req.params.id;
-    let producto =await manager.getProductsById(pid);
- if(!producto){
-    res.status(400).send( {status:'error',message:  `no existe el producto con ese id: ${pid}`})
- }
-//    producto.id=productsManager.getNextId();
-//   producto.status=true;
- 
-         res.send(producto)
- })
 
- productRouter.post('/',async(req,res)=>{
-    let producto=req.body;
-    producto.status=true;
-    producto.id=await manager.generateId();
-
-     if(!validateProduct(producto)){
-       res.status(400).send({status:'error',message:'invalid product'});
-     }
-        await manager.addProduct(producto);
-       res.send({status:"success",msg:"producto agregado"  })
- })
- productRouter.put('/:pid',async(req,res)=>{
-    let pid=req.params.id;
-    let fields=req.body;
-    let updateProduct= await manager.updateProducts(pid,fields)
- if(!updateProduct){
-    res.status(400).send({status:'error',message:'no existe el producto con ese id  '})
- } 
- res.send({status:"success",msg: `product ${updateProduct.id}updated `   })
- })
-
- productRouter.delete('/:pid',async(req,res)=>{
-    let pid=req.params.id;
-    let deleteProduct= await manager.deleteProduct(pid) 
-    if(!deleteProduct){
-        res.status(400).send({status:'error',message:'no existe el producto con ese id  '})
-        }
-        res.send({status:"success",msg: `product ${deleteProduct.id}deleted `   })
-    } )
- 
-  
-
-export default productRouter;
+ProductsRouter.delete("/:pid", async(req, res)=>{
+    let pid = req.params.pid;
+    let productDelete = await manager.deleteProduct(pid);
+    if (!productDelete) {
+        res.status(400).send({ status: "error", msg: "Product cannot be deleted!" })
+    }
+    res.send({ status: "success", msg: "Product deleted"})
+})
+export default ProductsRouter;

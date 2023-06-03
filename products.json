@@ -1,52 +1,20 @@
 [
-	{
-		"title": "Ipad G22",
-		"descripcion": "Tamaño de la pantalla: 6.5...",
-		"price": 67000,
-		"thumbnail": "https://i.imgur.com/EsxY88d.jpg",
-		"code": 1234,
-		"stock": 7,
-		"status": true,
-		"id": 1
-	},
-	{
-		"title": "Ipad G22",
-		"descripcion": "Tamaño de la pantalla: 6.5...",
-		"price": 67000,
-		"thumbnail": "https://i.imgur.com/EsxY88d.jpg",
-		"code": 1234,
-		"stock": 7,
-		"status": true,
-		"id": 2
-	},
-	{
-		"title": "Ipad G22",
-		"descripcion": "aTamaño de la pantalla: 6.5...",
-		"price": 67000,
-		"thumbnail": "https://i.imgur.com/EsxY88d.jpg",
-		"code": 1234,
-		"stock": 7,
-		"status": true,
-		"id": 3
-	},
-	{
-		"title": "Ipad G22",
-		"descripcion": "aaTamaño de la pantalla: 6.5...",
-		"price": 67000,
-		"thumbnail": "https://i.imgur.com/EsxY88d.jpg",
-		"code": 1234,
-		"stock": 7,
-		"status": true,
-		"id": 4
-	},
-	{
-		"title": "Ipad G22",
-		"descripcion": "aaaTamaño de la pantalla: 6.5...",
-		"price": 67000,
-		"thumbnail": "https://i.imgur.com/EsxY88d.jpg",
-		"code": 1234,
-		"stock": 7,
-		"status": true,
-		"id": 5
-	}
-]
+    {
+         "id" : 1,
+        "title" : "Ipad G22",
+         "description" : "Tamaño de la pantalla: 6.5...",
+         "price" : 67000,
+         "thumbnail" : "https://i.imgur.com/EsxY88d.jpg",
+         "code" : 1234,
+         "stock" : 7
+    },
+    {
+         "id": 2,
+        "title": " Tablet Samsung A8",
+        "description": "Sistema operativo: Android...",
+        "price": 112000,
+        "thumbnail": "https://i.imgur.com/365TQnk.jpg",
+        "code": 5678,
+        "stock": 10
+    }
+] 
