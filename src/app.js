@@ -8,7 +8,7 @@ import ProductsRouter from "./routes/products.js";
 import CartRouter from "./routes/cart.js";
 import ViewRouter from "./routes/views.js";
 import mongoose from "mongoose";
-
+import {messagesModel} from "./DAO/models/messages.model.js";
 const app = express();
 const Httpserver = app.listen(8080, ()=>{
     console.log("Server Runing on port 8080");
@@ -54,7 +54,7 @@ const mensajes=[]
       });
 
     socket.on("deleted-product", async (pid)=>{
-      let productDeleted = await manager.deleteProduct(parseInt(pid))
+      let productDeleted = await manager.deleteProduct(pid)
     })  
 
 
@@ -66,10 +66,12 @@ socket.on("newUserLoged",data=>
 )
 
 
-socket.on("message",data=>{
+socket.on("message",async data=>{
   console.log(`se recibio el mensaje ${data.message} del usuario ${data.user}`);
-  mensajes.push(data)
-  io.emit("messages",mensajes)
+  // mensajes.push(data)
+ let newMessage= await messagesModel.create(data)
+    let messages = await messagesModel.find()
+  io.emit("messages",messages)
 })
  })
 
