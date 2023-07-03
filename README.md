@@ -1,4 +1,8 @@
 #Rutas
+
+## Ingresar
+* cd .\Backend-Desafios\src\ , luego npm i express y luego npm run dev o node .\app.js
+
 ## /
 * [GET] - Devuelve la página principal con los productos agregados
 
