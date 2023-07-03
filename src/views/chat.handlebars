@@ -1,12 +1,14 @@
   
-<div >
- <br/>  
-    <input id="chatBox">
-</div>
-<div>
-    <p id="messageLogs" class="text-light"></p>
-</div>
+<div class="w-50 p-3" >
+ {{!-- <br/>   --}}
+    {{!-- <input id="chatBox"> --}}
+    <input id="chatBox" class="form-control" type="text"   aria-label="default input example">
 
+</div >
+  <div>
+    <p id="messageLogs" class="h5 text-light"  ></p>
+</div> 
+ 
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
    <script src="/socket.io/socket.io.js"></script>
 

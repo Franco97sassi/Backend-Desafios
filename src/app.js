@@ -14,7 +14,16 @@ const Httpserver = app.listen(8080, ()=>{
     console.log("Server Runing on port 8080");
 })
 
- 
+mongoose.connect("mongodb+srv://coderhouse:Avenida1997@coderhouse.962imlr.mongodb.net/ecommerce?retryWrites=true&w=majority")
+.then(()=>{
+  console.log("Conexion a la base de datos exitosa")
+}
+)
+.catch((err)=>{
+  console.log("Error en la conexion a la base de datos")
+} 
+)
+
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
@@ -34,19 +43,21 @@ const mensajes=[]
  io.on("connection", async (socket) =>{
     console.log("New User conected!");
 
-//     const data = await manager.getProducts();
-//     if (data) {
-//       io.emit("resp-new-product", data);
-//     }
+    const data = await manager.getProducts();
+    if (data) {
+      io.emit("resp-new-product", data);
+    }
 
-//     socket.on("createProduct", async (data) => {
-//       console.log(data);
-//         const newProduct = await manager.addProduct(data);
-//       });
+    socket.on("createProduct", async (data) => {
+      console.log(data);
+        const newProduct = await manager.addProduct(data);
+      });
 
-//     socket.on("deleted-product", async (id)=>{
-//       let deleted = await manager.deleteProduct(parseInt(id))
-//     })  
+    socket.on("deleted-product", async (pid)=>{
+      let productDeleted = await manager.deleteProduct(parseInt(pid))
+    })  
+
+
 socket.on("newUserLoged",data=>
 {
   console.log(data)
@@ -62,12 +73,4 @@ socket.on("message",data=>{
 })
  })
 
- mongoose.connect("mongodb+srv://coderhouse:Avenida1997@coderhouse.962imlr.mongodb.net/ecommerce?retryWrites=true&w=majority")
-.then(()=>{
-  console.log("Conexion a la base de datos exitosa")
-}
-)
-.catch((err)=>{
-  console.log("Error en la conexion a la base de datos")
-} 
-)
+ 

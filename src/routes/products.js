@@ -24,7 +24,7 @@ ProductsRouter.get("/:pid", async (req, res)=>{
     let pid = req.params.pid;
     let product  ;
     try{
-        product = await productManager.getProductById(pid);
+        product = await productManager.getProductsById(pid);
     } 
     catch(err){
         res.status(400).send({ status: "error", msg: "Product not found" })
@@ -53,13 +53,13 @@ ProductsRouter.post("/", async (req, res)=>{
 
 ProductsRouter.put("/:pid", async(req, res)=>{
     let pid = req.params.pid;
-    let newProduct = req.body;
-    let productUpdate = await manager.updateProduct(pid, newProduct);
-     if(!product.name || !product.price || !product.description || !product.category || !product.image){
+    let product = req.body;
+      if(!product.title || !product.description|| !product.code || !product.category||
+        !product.price || !product.stock ){
         res.status(400).send({ status: "error", msg: "Invalid product details" })
     }
     try   {
-        await productManager.updateProduct(pid, newProduct);
+        await productManager.updateProduct(pid, product);
     }
     catch(err){
         res.status(400).send({ status: "error", msg: "Product cannot be updated!" })

@@ -25,6 +25,7 @@ class ProductManager {
                 price: product.price,
                 // thumbnail: product.thumbnail,
                  stock: product.stock,
+                 id: product._id
              } 
         })
 
@@ -55,7 +56,7 @@ class ProductManager {
 
 
 }
-async updateProduct(pid, product){
+async updateProduct(pid, properties){
     let productUpdated;
     try {
         productUpdated = await productsModel.updateOne({_id:pid},properties);
@@ -65,6 +66,17 @@ async updateProduct(pid, product){
         console.log(error);
     }
     return productUpdated;
+}
+async deleteProduct(pid){
+    let productDeleted;
+    try { 
+        productDeleted = await this.model.deleteOne({_id:pid});
+        
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return productDeleted;
 }
 }
 export default ProductManager;
