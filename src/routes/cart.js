@@ -1,35 +1,46 @@
 import { Router } from "express";
-import CartManager from "../Managers/CartManager.js";
+import CartManager from "../DAO/CartDao.js"
 
 const CartRouter = Router();
 
 let manager = new CartManager;
 
 CartRouter.post("/", async (req, res)=>{
-    let newCart = await manager.createCart();
-    if (!newCart) {
-        res.status(400).send({ status: "error", msg: "" })
+    let newCart;
+    try{
+        newCart = await manager.createCart();
     }
-    res.send({ status: "success", msg: "Cart created!"})
+    catch(err){
+        res.status(400).send({ status: "error", msg: "Cart cannot be created!" })
+    }
+    res.send({ status: "success", msg: "Added Cart"})
+
 });
 
 CartRouter.get("/:cid", async (req, res)=>{
     let cid = req.params.cid;
-    let productOfCart = await manager.getProductsOfCart(cid);
-    if(!productOfCart){
-        res.status(404).send({ status: "error", msg: "Product not found" })
+    let product;
+    try{
+        product = await manager.getCartById(cid);
     }
-    res.send(productOfCart)
+    catch(err){
+        res.status(400).send({ status: "error", msg: "Cart not found" })
+    }
+    res.send({ status: "success", payload: product })
+
 });
 
 CartRouter.post("/:cid/products/:pid", async(req, res)=>{
     let cid = req.params.cid;
     let pid = req.params.pid;
-    let addProduct = await manager.AddProductToCart(cid, pid)
-    if (!addProduct) {
-        res.status(404).send({ status: "error", msg: "Product not added" })
+    let addProduct;
+    try{
+        addProduct = await manager.addProductToCart(cid, pid);
     }
-    res.send({ status: "success", msg: "Added Product"})
+    catch(err){
+        res.status(400).send({ status: "error", msg: "Product cannot be added to cart!" })
+    }
+    res.send({ status: "success", msg: "Added Product to Cart"})
 })
 
 

@@ -1,4 +1,6 @@
- 
+body {
+    background-color: black;
+}
 .card {
     margin-top: 20px;
     height: 300px;
@@ -12,4 +14,24 @@
 .cardRealTime {
     width: 200px;
     height: 320px;
+}
+ 
+.input-group {
+    height: 20px;
+    width: 500px;
+}
+
+.card-chat {
+    margin-top: 100px;
+    width: 300px;
+    border-radius: 10px;
+}
+.card {
+    margin-top: 20px;
+    height: 350px;
+}
+
+.formulario {
+    width: 600px;
+    height: 300px;
 }

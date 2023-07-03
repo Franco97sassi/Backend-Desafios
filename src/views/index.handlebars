@@ -1,7 +1,7 @@
 <section>
-    <h1 class="text-center py-5  ">Productos:</h1>
+    <h1 class="text-center py-5  text-light  ">Productos:</h1>
     <div class="container">
-        <div class="row justify-content-around">
+        <div class="row justify-content-around text-light">
             {{#each products}}
             <div class="col-4">
                 <div class="card border border-3">
@@ -12,6 +12,7 @@
                         <p class="card-text fs-6 fw-bold">Codigo: {{this.code}}</p>
                          <p class="card-text fs-6 fw-bold">Stock: {{this.stock}}</p>
                         <p class="card-text fs-6 fw-bold">Categoria: {{this.category}}</p>
+                        <button class="btn btn-primary">+</button>
                     </div>
                 </div>
             </div>
