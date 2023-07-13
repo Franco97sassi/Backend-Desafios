@@ -1,0 +1,82 @@
+<div>
+  <h1 class="text-center mt-4">Lista de Productos</h1>
+    <h5>Carrito: <p class="cart-id"></p></h5>
+  <section class="p-5">
+    <div class="row">
+      
+      <form method="GET" action="/products" class="mb-3">
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label for="limitSelect">Mostrar:</label>
+            <select name="limit" id="limitSelect" class="form-control">
+              <option value="10"{{#if_eq limit "10"}} selected{{/if_eq}}>10</option>
+              <option value="20"{{#if_eq limit "20"}} selected{{/if_eq}}>20</option>
+              <option value="50"{{#if_eq limit "50"}} selected{{/if_eq}}>50</option>
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="category">Categoría:</label>
+            <select name="category" id="category" class="form-control">
+              <option value="">Todas</option>
+              {{#each categories}}
+                <option value="{{name}}"{{#if selected}} selected{{/if}}>{{name}}</option>
+              {{/each}}
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="sortSelect">Ordenar por precio:</label>
+            <select name="sort" id="sortSelect" class="form-control">
+              <option value="asc"{{#if_eq sort "asc"}} selected{{/if_eq}}>Ascendente</option>
+              <option value="desc"{{#if_eq sort "desc"}} selected{{/if_eq}}>Descendente</option>
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <button type="submit" class="btn btn-primary mt-4">Aplicar</button>
+          </div>
+        </div>
+      </form>
+
+      {{#each products}}
+        <div class="col-md-2">
+          <div class="card mb-2 product-card">
+            <img
+              src="{{this.thumbnails}}"
+              class="card-img-top"
+              alt="Product Image"
+            />
+            <div class="card-body">
+              <h5 class="card-title">{{this.title}}</h5>
+              <p class="card-text">{{this.description}}</p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Category: {{this.category}}</li>
+              <li class="list-group-item">Price: {{this.price}}</li>
+              <li class="list-group-item">Code: {{this.code}}</li>
+              <li class="list-group-item">Stock: {{this.stock}}</li>
+            </ul>
+            <div class="card-footer">
+              <button class="btn btn-primary add-to-cart-btn" data-product-id="{{this._id}}">Add to Cart({{this._id}})</button>
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+        
+    <div class="pagination-container">
+      <ul class="pagination justify-content-center">
+        {{#if hasPrevPage}}
+          <li class="page-item"><a class="page-link" href="{{prevLink}}">Anterior</a></li>
+        {{/if}}
+        {{#if page}}
+          <li class="page-item disabled"><span class="page-link">{{page}}</span></li>
+        {{/if}}
+        {{#if hasNextPage}}
+          <li class="page-item"><a class="page-link" href="{{nextLink}}">Siguiente</a></li>
+        {{/if}}
+      </ul>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/addProduct.js"></script>

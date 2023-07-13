@@ -1,78 +1,107 @@
 import express from "express";
-import __dirname from "./utils.js";
 import handlebars from "express-handlebars";
-import { Server } from "socket.io";
-// import ProductManager from "./Managers/ProductManager.js";
-import ProductManager from "./DAO/ProductDao.js";
-import ProductsRouter from "./routes/products.js";
-import CartRouter from "./routes/cart.js";
-import ViewRouter from "./routes/views.js";
+import ifEqHelper from "../src/helpers/handlebars-helpers.js";
+import { multiplyHelper, calculateTotal } from "./helpers/cartHelper.js";
 import mongoose from "mongoose";
-import {messagesModel} from "./DAO/models/messages.model.js";
+import { Server } from "socket.io";
+import ProductManager from "./DAO/productsDAO.js";
+import MessagesManager from "./DAO/messagesDAO.js";
+import cartRouter from "./routes/cart.routes.js";
+import productsRouter from "./routes/products.routes.js";
+import chatRouter from "./routes/chat.routes.js";
+import viewsRouter from "./routes/views.routes.js";
+
 const app = express();
-const Httpserver = app.listen(8080, ()=>{
-    console.log("Server Runing on port 8080");
-})
 
-mongoose.connect("mongodb+srv://coderhouse:Avenida1997@coderhouse.962imlr.mongodb.net/ecommerce?retryWrites=true&w=majority")
-.then(()=>{
-  console.log("Conexion a la base de datos exitosa")
-}
-)
-.catch((err)=>{
-  console.log("Error en la conexion a la base de datos")
-} 
-)
-
-app.engine("handlebars", handlebars.engine());
-app.set("views", __dirname + "/views");
-app.set("view engine", "handlebars");
-
-app.use(express.static(__dirname + "/public"));
 app.use(express.json());
-app.use(express.urlencoded( {extended: true} ))
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+app.engine(
+  "handlebars",
+  handlebars.engine({
+    runtimeOptions: {
+      allowProtoPropertiesByDefault: true,
+      allowProtoMethodsByDefault: true,
+    },
+    helpers: {
+      if_eq: ifEqHelper,
+      multiply: multiplyHelper,
+      calculateTotal: calculateTotal,
+    },
+  })
+);
+app.set("views", "./src/views");
+app.set("view engine", "handlebars");
+app.use("/api/products", productsRouter);
+app.use("/api/cart", cartRouter);
+app.use("/", viewsRouter);
+app.use("/realtimeproducts", viewsRouter);
+app.use("/carts", viewsRouter);
+app.use("/chat", chatRouter);
 
-app.use("/", ViewRouter)
-app.use("/api/products", ProductsRouter)
-app.use("/api/carts", CartRouter)
-
-const manager = new ProductManager;
-const io = new Server(Httpserver)
-
-const mensajes=[]
- io.on("connection", async (socket) =>{
-    console.log("New User conected!");
-
-    const data = await manager.getProducts();
-    if (data) {
-      io.emit("resp-new-product", data);
-    }
-
-    socket.on("createProduct", async (data) => {
-      console.log(data);
-        const newProduct = await manager.addProduct(data);
-      });
-
-    socket.on("deleted-product", async (pid)=>{
-      let productDeleted = await manager.deleteProduct(pid)
-    })  
-
-
-socket.on("newUserLoged",data=>
-{
-  console.log(data)
-  io.emit("newUser",data)
-}
-)
-
-
-socket.on("message",async data=>{
-  console.log(`se recibio el mensaje ${data.message} del usuario ${data.user}`);
-  // mensajes.push(data)
- let newMessage= await messagesModel.create(data)
-    let messages = await messagesModel.find()
-  io.emit("messages",messages)
-})
- })
-
+const server = app.listen(8080, () =>
+  console.log("Corriendo en el puerto: 8080")
+);
  
+ 
+mongoose.connect(
+ "mongodb+srv://coderhouse:Avenida1997@coderhouse.962imlr.mongodb.net/ecommerce",
+  // "mongodb+srv://ltaralli:coder1234@cluster0.k7b3exc.mongodb.net/ecommerce",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
+
+const db = mongoose.connection;
+
+db.on("error", (error) => {
+  console.error("Error de conexión:", error);
+});
+
+db.once("open", () => {
+  console.log("Conexión exitosa a la base de datos.");
+});
+
+const io = new Server(server);
+const manager = new ProductManager();
+const managerMsg = new MessagesManager();
+const message = [];
+
+io.on("connection", async (socket) => {
+  console.log("nuevo cliente conectado");
+  const products = await manager.getProducts();
+  io.emit("productList", products);
+  
+  socket.on("product", async (newProd) => {
+    const resultAdd = await manager.addProduct(newProd);
+    if (resultAdd.error) {
+      socket.emit("productAddError", resultAdd.error);
+    } else {
+      const productsGet = await manager.getProducts();
+      io.emit("productList", productsGet);
+      socket.emit("productAddSuccess");
+    }
+  });
+
+  socket.on("productDelete", async (delProduct) => {
+    try {
+      let pid = await manager.deleteProduct(delProduct);
+      const products = await manager.getProducts();
+      io.emit("productList", products);
+    } catch (error) {
+      socket.emit("productDeleteError", error.message);
+    }
+  });
+
+  socket.on("messages", async (data) => {
+    let msgSend;
+    try {
+      msgSend = await managerMsg.addMessage(data);
+      message.unshift(data);
+      io.emit("messageLogs", message);
+    } catch (error) {
+      throw error;
+    }
+  });
+});

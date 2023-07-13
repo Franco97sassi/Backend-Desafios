@@ -1,23 +1,40 @@
-<section>
-    <h1 class="text-center py-5  text-light  ">Productos:</h1>
-    <div class="container">
-        <div class="row justify-content-around text-light">
-            {{#each products}}
-            <div class="col-4">
-                <div class="card border border-3">
-                    <div class="card-body text-center">
-                        <h3 class="card-title fs-4">{{this.title}}</h3>
-                        <p class="card-text ">{{this.description}}</p>
-                        <p class="card-text fs-6 fw-bold">Precio:${{this.price}}</p>
-                        <p class="card-text fs-6 fw-bold">Codigo: {{this.code}}</p>
-                         <p class="card-text fs-6 fw-bold">Stock: {{this.stock}}</p>
-                        <p class="card-text fs-6 fw-bold">Categoria: {{this.category}}</p>
-                        <button class="btn btn-primary">+</button>
-                    </div>
-                </div>
-            </div>
-            {{/each}}
-        </div>
-    </div>
-
-</section>
+<div>
+  <h1 class="text-center mt-4">Lista de Productos</h1>
+  <section class="p-5">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Code</th>
+          <th>Stock</th>
+          <th>Status</th>
+          {{!-- <th>Thumbnails</th> --}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+          <tr>
+            <td>{{this.id}}</td>
+            <td>{{this.title}}</td>
+            <td>{{this.description}}</td>
+            <td>{{this.category}}</td>
+            <td>{{this.price}}</td>
+            <td>{{this.code}}</td>
+            <td>{{this.stock}}</td>
+            <td>{{this.status}}</td>
+            {{!-- <td>
+              <img
+                width="100px"
+                src="{{this.thumbnails}}"
+                alt="{{this.title}}"
+              /></td> --}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </section>
+</div>

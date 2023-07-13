@@ -1,16 +1,15 @@
-  
-<div class="w-50 p-3" >
- {{!-- <br/>   --}}
-    {{!-- <input id="chatBox"> --}}
-    <input id="chatBox" class="form-control" type="text"   aria-label="default input example">
+<h2>Chat</h2>
+<div class="container">
+  <div class="chat-container">
+    <div class="chat-messages" id="messageLogs">
+    </div>
+    <div class="chat-input">
+      <input type="text" id="chatBox" placeholder="Escribe un mensaje..." />
+      <button id="sendButton" class="btn btn-primary">Enviar</button>
+    </div>
+  </div>
+</div>
 
-</div >
-  <div>
-    <p id="messageLogs" class="h5 text-light"  ></p>
-</div> 
- 
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   <script src="/socket.io/socket.io.js"></script>
-
-    <script src="js/chat.js"></script>
- 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/messages.js"></script>

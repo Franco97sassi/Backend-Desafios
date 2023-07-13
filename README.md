@@ -1,22 +1,16 @@
-#Rutas
+# Segunda PreEntrega - Backend CoderHouse - Comisión 51400
 
-## Ingresar
-* cd .\Backend-Desafios\src\ , luego npm i express y luego npm run dev o node .\app.js
+## Instalación
 
-## /
-* [GET] - Devuelve la página principal con los productos agregados
+Para poder ejecutar el proyecto, debes tener instalado [Node.js](https://nodejs.org/) y [Express](https://expressjs.com/es/) .
 
-## /realtimeProducts
-* [GET] - Devuelve un formulario para agregar productos
+1. Clonar el repositorio con el comando:
 
-## /chat
-* [GET] - Devuelve la página de chat
+   > `git clone https://github.com/ltaralli/SegundaPreEntrega-LTarlli.git`
 
-## /api/products
-* [GET] - Devuelve la página de chat
+2. Abre el proyecto en la carpeta raíz y ejecutar en la terminal:
 
-## /api/products/:id
-* [GET] - Devuelve un producto según su id
+   > `npm i`
 
-## /api/carts
-* [GET] - Devuelve carrito vacio
+3. Para iniciar el servidor local y ver el proyecto
+   > `npm start`

@@ -1,54 +1,89 @@
-<div class="container-sm mt-3 d-flex justify-content-between">
-  <div class="me-5">
-    <h2 class="text-light">Ingrese un Producto:</h2>
-    <form class="row g-3 formulario align-items-center">
-      <div class="col-md-4">
-        <label for="" class="form-label text-light">Title:</label>
-        <input type="text" class="form-control" id="title" required>
-      </div>
-      <div class="col-md-4">
-        <label for="" class="form-label text-light">Description:</label>
-        <input type="text" class="form-control" id="description" required>
-      </div>
-      <div class="col-md-4">
-        <label for="" class="form-label text-light">Price:</label>
-        <input type="text" class="form-control" id="price" required>
-      </div>
-      <div class="col-md-4">
-        <label for="" class="form-label text-light">Code:</label>
-        <input type="text" class="form-control" id="code" required>
-      </div>
-      <div class="col-md-4">
-        <label for="" class="form-label text-light">Stock:</label>
-        <input type="text" class="form-control" id="stock" required>
-      </div>
-      <div class="col-md-4">
-        <label for="" class="form-label text-light">Category:</label>
-        <input type="text" class="form-control" id="category" required>
-      </div>
-      <div class="col-12">
-        <button class="btn btn-success" type="submit" id="btnAgregar">Enviar</button>
-      </div>
-    </form>
-  </div>
-  
-  <div>
-    <h2 class="text-light">Eliminar Producto</h2>
-    <form class="row g-3 formulario align-items-center">
-      <div class="col-md-4">
-        <label   class="form-label text-light">Ingrese el ID:</label>
-        <input type="text" class="form-control" id="socketId" required>
-      </div>
-      <div class="col-12">
-        <button class="btn btn-danger" type="submit" id="btnEliminar">Eliminar</button>
-      </div>
-    </form>
-  </div>
-
+<div>
+    <h2 class="text-center mt-4" >Real Time Products</h2>
 </div>
 
-<div class="container d-flex gap-3 mb-3" id="productos">
-  </div>
 
+<ul class="nav nav-tabs m-2" id="productTabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="addProductTab" data-bs-toggle="tab" data-bs-target="#addProduct" type="button" role="tab" aria-controls="addProduct" aria-selected="true">Añadir producto</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="deleteProductTab" data-bs-toggle="tab" data-bs-target="#deleteProduct" type="button" role="tab" aria-controls="deleteProduct" aria-selected="false">Eliminar producto</button>
+  </li>
+</ul>
+
+<div class="tab-content" id="productTabContent">
+  <div class="tab-pane fade show active" id="addProduct" role="tabpanel" aria-labelledby="addProductTab">
+      <!-- Formulario para añadir un producto -->
+    <form class="p-5" action="/api/products" method="POST">
+  <div class="mb-6">
+    <label for="title" class="form-label">Title</label>
+    <input type="text" class="form-control" id="title" name="title" required>
+  </div>
+  <div class="mb-6">
+    <label for="description" class="form-label">Description</label>
+    <input type="text" class="form-control" id="description" name="description" required>
+  </div>
+  <div class="mb-6">
+    <label for="price" class="form-label">Price</label>
+    <input type="number" class="form-control" id="price" name="price" required>
+  </div>
+  <div class="mb-6">
+    <label for="thumbnails" class="form-label">Thumbnails</label>
+    <input type="text" class="form-control" id="thumbnails" name="thumbnails" required>
+  </div>
+  <div class="mb-6">
+    <label for="code" class="form-label">Code</label>
+    <input type="text" class="form-control" id="code" name="code" required>
+  </div>
+  <div class="mb-6">
+    <label for="stock" class="form-label">Stock</label>
+    <input type="number" class="form-control" id="stock" name="stock" required>
+  </div>
+  <div class="mb-6">
+    <label for="category" class="form-label">Category</label>
+    <input type="text" class="form-control" id="category" name="category" required>
+  </div>
+  <div class="pt-3">
+    <button type="submit" id="addProduct" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+  </div>
+  <div class="tab-pane fade" id="deleteProduct" role="tabpanel" aria-labelledby="deleteProductTab">
+    <!-- Contenido para eliminar un producto -->
+    <form class="p-5">
+      <div class="mb-6">
+        <label for="pid" class="form-label">ID del Producto</label>
+        <input class="form-control" id="pid" name="pid" required>
+      </div>
+        <div class="pt-3">
+          <button type="button" id="deletProduct" class="btn btn-primary">Submit</button>
+       </div>
+    </form>
+</div>
+
+   <section class="p-5">
+    <h2 class="text-center">Productos</h2>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Code</th>
+        <th>Stock</th>
+        <th>Status</th>
+        <th>Thumbnails</th>
+      </tr>
+    </thead>
+    <tbody id="productList">
+      <!-- Mapeo de productos -->
+    </tbody>
+  </table>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script src="js/index.js"></script>
+<script src="js/realTimeProducts.js"></script>
