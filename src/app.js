@@ -10,9 +10,21 @@ import cartRouter from "./routes/cart.routes.js";
 import productsRouter from "./routes/products.routes.js";
 import chatRouter from "./routes/chat.routes.js";
 import viewsRouter from "./routes/views.routes.js";
+import sessionsRouter from "./routes/session.routes.js";
+import session from "express-session";
+import MongoStore from 'connect-mongo';
 
 const app = express();
+const server = app.listen(8080, () =>
+  console.log("Corriendo en el puerto: 8080")
+);
+mongoose.connect("mongodb+srv://coderhouse:Avenida1997@coderhouse.962imlr.mongodb.net/ecommerce")
+.then(() => console.log("Conexión exitosa a la base de datos."))
+    .catch((error) => console.error("Error de conexión:", error));   
+// "mongodb+srv://ltaralli:coder1234@cluster0.k7b3exc.mongodb.net/ecommerce",
+      
 
+  
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -38,20 +50,23 @@ app.use("/", viewsRouter);
 app.use("/realtimeproducts", viewsRouter);
 app.use("/carts", viewsRouter);
 app.use("/chat", chatRouter);
-
-const server = app.listen(8080, () =>
-  console.log("Corriendo en el puerto: 8080")
-);
+app.use('/api/session',sessionsRouter)
+app.use(session({
+  store: MongoStore.create({
+      mongoUrl:
+          'mongodb+srv://francosassi97:Avenida1997@coderhouse.962imlr.mongodb.net/session?retryWrites=true&w=majority',
+      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+      ttl: 3600,
+  }),
+   
+  secret: "mysecret",
+  resave: false,
+  saveUninitialized: false,
+}))
  
  
-mongoose.connect(
- "mongodb+srv://coderhouse:Avenida1997@coderhouse.962imlr.mongodb.net/ecommerce",
-  // "mongodb+srv://ltaralli:coder1234@cluster0.k7b3exc.mongodb.net/ecommerce",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+ 
+ 
 
 const db = mongoose.connection;
 

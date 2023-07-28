@@ -1,4 +1,13 @@
 <div>
+  <div class="container text-center my-3">
+    <div class="jumbotron" style="background-color: green;color: white;">
+        <h1>USER OK LOGIN!</h1>
+        <h2><i>Bienvenido {{user.email}}
+           </i></h2>
+
+        <button class="btn btn-danger my-5" onclick="location.href='/api/session/logout'">LOGOUT</button>
+    </div>
+</div>
   <h1 class="text-center mt-4">Lista de Productos</h1>
     <h5>Carrito: <p class="cart-id"></p></h5>
   <section class="p-5">
