@@ -5,15 +5,15 @@ const viewsRouter = Router();
 const manager = new ProductManager();
 const managerCart = new CartManager();
 
-viewsRouter.get("/", async (req, res) => {
-  try {
-    let result = await manager.getProducts();
-    res.render("index", { products: result });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error interno del servidor");
-  }
-});
+// viewsRouter.get("/", async (req, res) => {
+//   try {
+//     let result = await manager.getProducts();
+//     res.render("index", { products: result });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Error interno del servidor");
+//   }
+// });
 
 viewsRouter.get("/realtimeproducts", async (req, res) => {
   let pageBody = parseInt(req.query.page);

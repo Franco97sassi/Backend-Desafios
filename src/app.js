@@ -42,6 +42,18 @@ app.engine(
     },
   })
 );
+app.use(session({
+  store: MongoStore.create({
+      mongoUrl:
+   'mongodb+srv://francosassi97:Avenida1997@coderhouse.962imlr.mongodb.net/ecommerce',
+      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+      // ttl: 3600,
+  }),
+   
+  secret: "mysecret",
+  resave: false,
+  saveUninitialized: false,
+}))
 app.set("views", "./src/views");
 app.set("view engine", "handlebars");
 app.use("/api/products", productsRouter);
@@ -50,33 +62,22 @@ app.use("/", viewsRouter);
 app.use("/realtimeproducts", viewsRouter);
 app.use("/carts", viewsRouter);
 app.use("/chat", chatRouter);
-app.use('/api/session',sessionsRouter)
-app.use(session({
-  store: MongoStore.create({
-      mongoUrl:
-          'mongodb+srv://francosassi97:Avenida1997@coderhouse.962imlr.mongodb.net/session?retryWrites=true&w=majority',
-      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-      ttl: 3600,
-  }),
-   
-  secret: "mysecret",
-  resave: false,
-  saveUninitialized: false,
-}))
  
+app.use('/',sessionsRouter)
+
  
  
  
 
-const db = mongoose.connection;
+// const db = mongoose.connection;
 
-db.on("error", (error) => {
-  console.error("Error de conexión:", error);
-});
+// db.on("error", (error) => {
+//   console.error("Error de conexión:", error);
+// });
 
-db.once("open", () => {
-  console.log("Conexión exitosa a la base de datos.");
-});
+// db.once("open", () => {
+//   console.log("Conexión exitosa a la base de datos.");
+// });
 
 const io = new Server(server);
 const manager = new ProductManager();

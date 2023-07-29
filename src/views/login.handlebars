@@ -20,7 +20,7 @@
       <h1>LOGIN</h1>
       {{!-- <h2><i>Contraseña cambiada para user: {{ user.email }}</i></h2> --}}
       <br>
-      <form class="form" action="/api/session/login" method="post" role="form" autocomplete="off">
+      <form class="form" action="/login" method="post" role="form" autocomplete="off">
 
         <div class="form-group">
           <input id="email" name='email' placeholder="usuario" class="form-control" type="text" required>
@@ -37,7 +37,7 @@
 
       <hr>
       <div class="text-left">
-        <button class="btn btn-success my-3" onclick="location.href = '/api/session/register'">Ir a Register</button>
+        <button class="btn btn-success my-3" onclick="location.href = '/register'">Ir a Register</button>
         <button class="btn btn-success my-3" onclick="location.href = '/api/session/restore'">Restaurar contraseña</button>
       </div>
     </div>
