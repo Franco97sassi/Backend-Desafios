@@ -4,10 +4,12 @@
       {{!-- {{#if  user.email!=adminCoder@coder.com }} --}}
       <h1>USER OK LOGIN!</h1>
 {{#if_eq user.role "admin"}} 
-      <h2> Bienvenido Administrador; tu rol es: admin</h2>
+      <h2> Bienvenido Administrador;</h2>
+        <h2>   tu rol es: admin</h2>
    {{else}}  
          
-      <h2> Bienvenido: email:{{user.email}},tu rol es: {{role}} </h2>
+      <h2> Bienvenido: email:{{user.email}},</h2> 
+       <h2>  tu rol es: {{user.role}} </h2>
      {{/if_eq}}
       {{!-- {{else}} --}}
        {{!-- {{/if}} --}}

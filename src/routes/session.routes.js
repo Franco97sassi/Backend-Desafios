@@ -54,13 +54,15 @@ sessionsRouter.get('/register', (req, res) => {
 })
 sessionsRouter.post('/register', async (req, res) => {
   let user = req.body;
-  let userFound = await getByEmail(user.email);
-  if  (userFound)    {
-    res.render('register-error', {})
+   let userFound = await getByEmail(user.email);
+   if (userFound || user.email === "adminCoder@coder.com") {
+    res.render('register-error', {});
+  } else if (userFound) {
+    res.render('register-error', {});
+  } else {
+    let result = await createUser(user);
+    res.render('login', {});
   }
-  let result = await createUser(user);
-
-  res.render('login', {})
 })
 
 sessionsRouter.get('/', (req, res) => {
@@ -78,17 +80,22 @@ sessionsRouter.post('/login', async (req, res) => {
   // res.render('products', {user: result.first_name})
   let { email, password  } = req.body;
   try {
+    let role ;
+    if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
+       role = "admin"
+      req.session.user = { email, role };
+      res.render('products', { user: req.session.user });
+    }
     let user = await getByEmail(email);
-    if ((!user || password !== user.password) && (email !== "adminCoder@coder.com")) {
+    if  (!user || password !== user.password) 
+    {
       res.render('login-error', {})
       return;
     }
-    let role = "usuario"
-    if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
-      role = "admin"
-    }
-    req.session.user = { email,role,};
-    res.render('products', { user: req.session.user   })
+    else {  
+      role = "user"
+    req.session.user = { email,role };
+    res.render('products', { user: req.session.user   })}
   } catch (err) {
     console.log(err);
     res.render('login-error', {})
