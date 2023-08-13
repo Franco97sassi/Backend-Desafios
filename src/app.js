@@ -13,10 +13,11 @@ import viewsRouter from "./routes/views.routes.js";
 import sessionsRouter from "./routes/session.routes.js";
 import session from "express-session";
 import MongoStore from 'connect-mongo';
-
+ import initializePassport from "./config/passport-config.js";
+import passport from "passport";
 const app = express();
-const server = app.listen(8080, () =>
-  console.log("Corriendo en el puerto: 8080")
+const server = app.listen(8000, () =>
+  console.log("Corriendo en el puerto: 8000")
 );
 mongoose.connect("mongodb+srv://coderhouse:Avenida1997@coderhouse.962imlr.mongodb.net/ecommerce")
 .then(() => console.log("Conexión exitosa a la base de datos."))
@@ -54,6 +55,14 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
 }))
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+
+
+
 app.set("views", "./src/views");
 app.set("view engine", "handlebars");
 app.use("/api/products", productsRouter);
@@ -63,7 +72,7 @@ app.use("/realtimeproducts", viewsRouter);
 app.use("/carts", viewsRouter);
 app.use("/chat", chatRouter);
  
-app.use('/',sessionsRouter)
+app.use('/api/sessions',sessionsRouter)
 
  
  

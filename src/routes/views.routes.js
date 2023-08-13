@@ -1,6 +1,8 @@
 import { Router } from "express";
 import ProductManager from "../DAO/productsDAO.js";
 import CartManager from "../DAO/cartsDAO.js";
+import  session from "passport";
+import sessionsRouter from "./session.routes.js";
 const viewsRouter = Router();
 const manager = new ProductManager();
 const managerCart = new CartManager();
@@ -84,4 +86,51 @@ viewsRouter.get("/carts/:cid", async (req, res) => {
     res.status(500).send("Error interno del servidor");
   }
 });
+
+
+
+
+
+viewsRouter.get("/login", async (req, res) => {
+  if (req.session.user) {
+    res.redirect("/products");
+     
+  }else {
+    res.render("login",{});
+  }
+
+  viewsRouter.post("/login", sessionsRouter);
+
+  viewsRouter.get("/register", async (req, res) => {
+     if (req.session.user) {
+    res.redirect("/products");
+     }
+    res.render("register",{});
+   }
+  );
+
+   viewsRouter.post("/register",sessionsRouter);
+
+   viewsRouter.get("/failregister", async (req, res) => {
+    res.render("register-error",{});
+   })
+   
+    viewsRouter.get("/faillogin", async (req, res) => {
+    res.render("login-error",{});
+    })
+    viewsRouter.get('/logout', async (req, res) => {
+      req.session.destroy(error => {
+        res.redirect('/login')
+      });
+        
+    })
+    viewsRouter.get('/failregister', async (req, res) => {
+  res.render('register-error', {})
+})
+viewsRouter.get('/faillogin', async (req, res) => {
+  res.render('login-error', {})
+})
+});
+
+
 export default viewsRouter;

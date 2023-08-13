@@ -1,76 +1,43 @@
 import { Router } from 'express';
 import { createUser, getAll, getByEmail } from '../DAO/sessionDAO.js';
 import { authMiddleware, validateName } from '../middlewares/auth.js';
-const sessionsRouter = Router();
+import { createHash, isValidPassword } from '../utils/index.js';
+import passport from 'passport';
+const  sessionsRouter = Router();
+ 
+// sessionsRouter.get('/register', (req, res) => {
+//   res.render('register', {})
+// })
 
-//  sessionsRouter.get('/login', (req, res) => {
-//   if(req.session.counter){
-//       req.session.counter++;
-//       res.send(`${req.session.name} visitaste el sitio ${req.session.counter} veces.`)
-//   }else{
-//        let nombre = req.query.nombre ? req.query.nombre : '';
-//       req.session.counter = 1;
-//         req.session.name = nombre;
-//       res.send(`Bienvenido ${req.session.name} al sitio.`)
-//   }
+sessionsRouter.post('/register',
+passport.authenticate("register",{failureRedirect:'/failregister'})
+, async (req, res) => {
+
+  // let user = req.body;
+
+  //  let userFound = await getByEmail(user.email);
+  //  if (userFound || user.email === "adminCoder@coder.com") {
+  //   res.render('register-error', {});
+  // } else if (userFound) {
+  //   res.render('register-error', {});
+  // } else {
+
+  //   user.password = createHash(user.password);
+
+  //   let result = await createUser(user);
+    res.redirect('/login' );
+  // }
+})
+
+// sessionsRouter.get('/', (req, res) => {
+//   res.render('login', {})
 // })
 
 
-// sessionsRouter.get('/loginAdmin', (req, res) => {
-//   if (req.session.counter) {
-//     req.session.counter++;
-//     res.send(`${req.session.name} vistaste el sitio ${req.session.counter} veces.`)
-//   } else {
-//     let nombre = req.query.nombre ? req.query.nombre : '';
-//     req.session.counter = 1;
-//     req.session.name = nombre;
-//     req.session.admin = true;
-//     res.send(`Bienvenido ${req.session.name} al sitio.`)
-//   }
-// })
-// // sessionsRouter.get('/privada', auth, (req, res) => {
-// //   res.send('Esto es privado')
-// // })
+sessionsRouter.post('/login',
+passport.authenticate("login",{failureRedirect:'/faillogin'}) ,
 
-// sessionsRouter.get('/kevin', validateName, (req, res) => {
-//   res.send('Esto es privado para kevin')
-// })
-// // sessionsRouter.get('/logout', (req, res) => {
-// //   req.session.destroy(err => { 
-// //       if(!err) return res.send('Logout ok');
-// //       res.send('Error al desloguear')
-// //   }) 
-// // })
-
-
-
-
-
-
-
-
-sessionsRouter.get('/register', (req, res) => {
-  res.render('register', {})
-})
-sessionsRouter.post('/register', async (req, res) => {
-  let user = req.body;
-   let userFound = await getByEmail(user.email);
-   if (userFound || user.email === "adminCoder@coder.com") {
-    res.render('register-error', {});
-  } else if (userFound) {
-    res.render('register-error', {});
-  } else {
-    let result = await createUser(user);
-    res.render('login', {});
-  }
-})
-
-sessionsRouter.get('/', (req, res) => {
-  res.render('login', {})
-})
-
-
-sessionsRouter.post('/login', async (req, res) => {
+async (req, res) => {
   // let user = req.body;
   // let result = await getByEmail(user.email);
   // if (user.password != result.password) {
@@ -78,24 +45,31 @@ sessionsRouter.post('/login', async (req, res) => {
   // }
   // req.session.user = user.user;
   // res.render('products', {user: result.first_name})
-  let { email, password  } = req.body;
+
+  
+
+
   try {
+
     let role ;
-    if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
+
+    if (req.user.email === "adminCoder@coder.com" && req.user.password === "adminCod3r123") {
        role = "admin"
-      req.session.user = { email, role };
-      res.render('products', { user: req.session.user });
+      req.session.user = { email:req.user.email, role };
+      // res.render('products', { user: req.session.user });
+      res.redirect('/products' );
     }
+
     let user = await getByEmail(email);
-    if  (!user || password !== user.password) 
+    if  (!user || !isValidPassword(user, password))
     {
       res.render('login-error', {})
       return;
-    }
-    else {  
+    }else {  
       role = "user"
-    req.session.user = { email,role };
+    req.session.user = { email:req.user.email,role,first_name };
     res.render('products', { user: req.session.user   })}
+
   } catch (err) {
     console.log(err);
     res.render('login-error', {})
@@ -103,19 +77,34 @@ sessionsRouter.post('/login', async (req, res) => {
 }
 
 )
-
+// sessionsRouter.get('/failregister', async (req, res) => {
+//   res.render('register-error', {})
+// })
+// sessionsRouter.get('/faillogin', async (req, res) => {
+//   res.render('login-error', {})
+// })
 
 // sessionsRouter.get('/profile', authMiddleware, async (req, res) => {
 //   let user = await getByEmail(req.session.user);
 //   res.render('datos', { user })
 // })
-sessionsRouter.get('/logout', async (req, res) => {
-  req.session.destroy(error => {
-    res.render("login")
-  });
-  res.redirect('/')
+// sessionsRouter.get('/logout', async (req, res) => {
+//   req.session.destroy(error => {
+//     res.render("login")
+//   });
+//   res.redirect('/')
 
+// })
+
+sessionsRouter.get('/github', passport.authenticate('github',
+ { scope: ['user:email'] }), async (req, res) => {})
+
+sessionsRouter.get('/githubcallback', 
+passport.authenticate('github',
+ { failureRedirect: '/login' }), async (req, res) => {
+  req.session.user = req.user;
+
+  res.redirect('/products' );
 })
-
 
 export default sessionsRouter;

@@ -37,4 +37,12 @@ export const createUser = async user => {
     return result;
 }
 
- 
+export const getById = async id => {
+    let result;
+    try {
+        result= await userModel.findOne({_id:id})
+    } catch (error) {
+        console.log(error)
+    }
+    return result
+}
