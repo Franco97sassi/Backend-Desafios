@@ -36,13 +36,14 @@ export const createUser = async user => {
 
     return result;
 }
-
 export const getById = async id => {
-    let result;
+     let result;
     try {
-        result= await userModel.findOne({_id:id})
-    } catch (error) {
+         result=await  userModel.findOne({_id:id})
+        console.log(error)
+    }catch (error) {
         console.log(error)
     }
-    return result
+    return result;
+
 }
