@@ -15,6 +15,7 @@ import session from "express-session";
 import MongoStore from 'connect-mongo';
 import initializePassport from "./config/passport-config.js";
 import passport from "passport";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const server = app.listen(8080, () =>
@@ -29,6 +30,8 @@ mongoose.connect("mongodb+srv://coderhouse:Avenida1997@coderhouse.962imlr.mongod
   
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
+
 app.use(express.static("public"));
 app.engine(
   "handlebars",
@@ -44,7 +47,9 @@ app.engine(
     },
   })
 );
+// initializePassport(passport);
 initializePassport(passport);
+
 app.use(session({
   store: MongoStore.create({
       mongoUrl:
@@ -58,6 +63,7 @@ app.use(session({
   saveUninitialized: false,
 }))
 app.use(passport.initialize());
+app.use(passport.session())
 app.set("views", "./src/views");
 app.set("view engine", "handlebars");
 app.use("/api/products", productsRouter);

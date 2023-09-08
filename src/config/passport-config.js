@@ -1,11 +1,23 @@
 import passport from 'passport';
 import local from 'passport-local';
 import GithubStrategy from 'passport-github2'
-import { createUser, getByEmail } from '../DAO/sessionDAO.js';
+import { createUser, getByEmail, getById } from '../DAO/sessionDAO.js';
 import { createHash, isValidPassword } from '../utils/index.js';
+import jwt from "passport-jwt"
 
-const LocalStrategy = local.Strategy;
-const initializePassport = () => {
+  const LocalStrategy = local.Strategy;
+// const JWTStrategy=jwt.Strategy;
+// const ExtractJWT=jwt.ExtractJwt;
+
+// const cookieExtractor=req=>{
+//     let token=null;
+//     if(req&&req.cookies){
+//         token=req.cookies["authtoken"]
+//     }
+//     return token;
+// }
+
+ const initializePassport = () => {
     passport.use("register", new LocalStrategy({
         passReqToCallback: true, usernameField: "email"
     }, async (req, username, password, done) => {
@@ -24,6 +36,37 @@ const initializePassport = () => {
         }
 
     }));
+
+// const initializePassport=()=>{
+//     passport.use("jwt",new JWTStrategy({
+//         jwtFromRequest:ExtractJWT.fromExtractors([cookieExtractor]),
+//         secretOrKey:"clavesecreta"
+//     },async(jwt_payload,done)=>{
+//         try{
+//             // return done(null,jwt_payload)
+
+           
+//               // Aquí puedes realizar la lógica para verificar y autenticar al usuario
+//               // ...
+          
+//               // Si el usuario es válido, devolverlo
+//               return done(null, jwt_payload);
+//         }catch(err){
+//             return done(err)
+//         }
+//     }))
+//         passport.serializeUser(function(user, done)   {
+//             done(null, user.username);
+//         }
+//         );
+//         passport.deserializeUser( function(username, done){
+//             const usuario=usuarios.find(usuario=>usuario.username==username)
+//             done(null, usuario);
+//         }
+//         );
+//          }
+    
+ 
 
     passport.use('login', new LocalStrategy({ usernameField: "email" }, async (username, password, done) => {
         let result = await getByEmail(username);

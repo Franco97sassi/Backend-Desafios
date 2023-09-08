@@ -40,10 +40,19 @@ export const getById = async id => {
      let result;
     try {
          result=await  userModel.findOne({_id:id})
-        console.log(error)
-    }catch (error) {
+     }catch (error) {
         console.log(error)
     }
     return result;
 
+}
+
+export const getUser=async email=>{
+    let result;
+    try{
+        result =await userModel.findOne({email:email}).select("-password")
+    }catch(error){
+        console.log(error);
+    }
+    return result
 }

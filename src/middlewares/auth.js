@@ -1,3 +1,4 @@
+ 
 export const authMiddleware = (req, res, next) => {
     if(req.session.user){
         next()
@@ -12,4 +13,5 @@ export const validateName = (req, res, next) => {
         res.send('No sos kevin')
     }
 } 
- 
+
+  
