@@ -1,58 +1,59 @@
-import mongoose from "mongoose";
 import { userModel } from "./db/model/user.model.js";
- 
-// mongoose.connect
-// (            'mongodb+srv://francosassi97:Avenida1997@coderhouse.962imlr.mongodb.net/ecommerce?retryWrites=true&w=majority',
-// )
-export const getAll = async () => {
+
+class userManager {
+  constructor() {
+    this.model = userModel;
+  }
+
+  async getAll() {
     let result;
     try {
-        result = await userModel.find()
+      result = await this.model.find();
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
-
     return result;
-}
+  }
 
-export const getByEmail = async email => {
+  async getByEmail(email) {
     let result;
     try {
-        result = await userModel.findOne({ email })
+      result = await this.model.findOne({ email: email });
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
-
     return result;
-}
+  }
 
-export const createUser = async user => {
+  async getUser(email) {
     let result;
     try {
-        result = await userModel.create(user)
+      result = await this.model.findOne({ email: email }).select("-password");
     } catch (error) {
-        console.log(error)
-    }
-
-    return result;
-}
-export const getById = async id => {
-     let result;
-    try {
-         result=await  userModel.findOne({_id:id})
-     }catch (error) {
-        console.log(error)
+      console.log(error);
     }
     return result;
+  }
 
-}
-
-export const getUser=async email=>{
+  async getById(id) {
     let result;
-    try{
-        result =await userModel.findOne({email:email}).select("-password")
-    }catch(error){
-        console.log(error);
+    try {
+      result = await this.model.findOne({ _id: id });
+    } catch (error) {
+      console.log(error);
     }
-    return result
+    return result;
+  }
+
+  async createUser(user) {
+    let result;
+    try {
+      result = this.model.create(user);
+    } catch (error) {
+      console.log(error);
+    }
+    return result;
+  }
 }
+
+export default userManager;

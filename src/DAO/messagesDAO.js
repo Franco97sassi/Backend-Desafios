@@ -1,4 +1,4 @@
-import { messagesModel } from "./db/model/messages.model.js";
+import { messagesModel } from "../DAO/db/model/messages.model.js";
 
 class MessagesManager {
   constructor() {

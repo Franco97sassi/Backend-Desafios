@@ -3,12 +3,12 @@
     <div class="jumbotron" style="background-color: green;color: white;">
       {{!-- {{#if  user.email!=adminCoder@coder.com }} --}}
       <h1>USER OK LOGIN!</h1>
-{{#if_eq user.role "admin"}} 
+{{#if_eq user.email "adminCoder@coder.com"}} 
       <h2> Bienvenido Administrador;</h2>
         <h2>   tu rol es: admin</h2>
    {{else}}  
          
-      <h2> Bienvenido: email:{{user }}</h2> 
+      <h2> Bienvenido: usuario:{{user.first_name}} {{user.last_name}}</h2> 
  
        <h2>  tu rol es: usuario </h2>
      {{/if_eq}}
