@@ -1,19 +1,19 @@
 <div>
   <div class="container text-center my-3">
     <div class="jumbotron" style="background-color: green;color: white;">
-      {{!-- {{#if  user.email!=adminCoder@coder.com }} --}}
+      {{!-- {{#if user.email!=adminCoder@coder.com }} --}}
       <h1>USER OK LOGIN!</h1>
-{{#if_eq user.email "adminCoder@coder.com"}} 
+      {{#if_eq user.email "adminCoder@coder.com"}}
       <h2> Bienvenido Administrador;</h2>
-        <h2>   tu rol es: admin</h2>
-   {{else}}  
-         
-      <h2> Bienvenido: usuario:{{user.first_name}} {{user.last_name}}</h2> 
- 
-       <h2>  tu rol es: usuario </h2>
-     {{/if_eq}}
+      <h2> tu rol es: admin</h2>
+      {{else}}
+
+      <h2> Bienvenido: usuario:{{user.first_name}} {{user.last_name}}</h2>
+
+      <h2> tu rol es: usuario </h2>
+      {{/if_eq}}
       {{!-- {{else}} --}}
-       {{!-- {{/if}} --}}
+      {{!-- {{/if}} --}}
       <br>
       <button class="btn btn-danger my-5" onclick="location.href='/logout'">LOGOUT</button>
     </div>
@@ -71,8 +71,7 @@
             <li class="list-group-item">Stock: {{this.stock}}</li>
           </ul>
           <div class="card-footer">
-            <button class="btn btn-primary add-to-cart-btn" data-product-id="{{this._id}}">Add to
-              Cart({{this._id}})</button>
+            <button class="btn btn-primary add-to-cart-btn" data-product-id="{{this._id}}">Add to Cart({{this._id}})</button>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { cartsModel } from "./db/model/carts.model.js";
 import { productsModel } from "./db/model/products.model.js";
-
+import ProductManager from "./productsDAO.js"
 class CartManager {
   constructor() {
     this.model = cartsModel;
@@ -119,7 +119,7 @@ class CartManager {
 
   async updateCart(cid, products) {
     try {
-      const filter = { _id: cid };
+      const filter = { cid };
       const update = { products };
       const options = { new: true };
 
@@ -207,6 +207,85 @@ class CartManager {
       };
     }
   }
+
+  async verifyPurchase(cid) {
+    try {
+      const cart = await this.model.findById(cid)
+      const productsToPurchase = [];
+      const productsNotPurchase = [];
+      for (const product of cart.products) {
+        const productData = await productsModel.findById(product._id)
+        if (productData.stock >= product.quantity) {
+          const productToPurchase = {
+            _id: product._id,
+            price: productData.price,
+            quantity: product.quantity
+          }
+          productsToPurchase.push(productToPurchase)
+        } else {
+          productsNotPurchase.push(product)
+        }
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: `Ocurrio un error al verificar la compra`
+      }
+    }
+  }
+  async processPurchase(productsToPurchase) {
+    try {
+      for (const product of productsToPurchase) {
+        const productData = await productsModel.findById(product._id)
+        const newStock = productData.stock - product.quantity
+        await productsModel.updateOne(
+          { _id: product._id },
+          { stock: newStock }
+        )
+      }
+      return {
+        success: true,
+        message: "productos procesados exitosamente"
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: "ocurrio un error al actualizar stock"
+      }
+    }
+  }
+  async unprocessedProducts(cid, productsNotPurchase) {
+    try {
+      if (!productsNotPurchase || productsNotPurchase.length === 0) {
+        return {
+          success: true,
+          message: "no hay productos no comprados para eliminar del carrito"
+        }
+
+      }
+      const productIdsNotPurchase = productsNotPurchase.map(
+        (product) => product._id
+      )
+      const updatedCart = await this.model.findByIdAndUpdate(cid,
+        { $pull: { products: { _id: { $in: productIdsNotPurchase } } } }, { new: true })
+
+      if (!updatedCart) {
+        console.log("carrito no encontrado");
+      }
+      return {
+        success: true,
+        message: "productos no comprados eliminados del carrito exitosamente"
+      }
+
+
+    } catch (error) {
+      return {
+        success: false,
+        message: "ocurrio un error al actualizar el carrito"
+      }
+    }
+  }
+
 }
 
 export default CartManager;

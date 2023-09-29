@@ -25,6 +25,7 @@ class userManager {
     return result;
   }
 
+  //se comenta este?
   async getUser(email) {
     let result;
     try {

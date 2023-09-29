@@ -6,11 +6,13 @@ export const multiplyHelper = function (a, b) {
 
 export const calculateTotal = function (products) {
   let total = 0;
+  if (Array.isArray(products)) {
+
   products.forEach((product) => {
     total += product._id.price * product.quantity;
   });
   return total.toFixed(2);
-};
+}; }
 
 handlebars.registerHelper("multiply", multiplyHelper);
 handlebars.registerHelper("calculateTotal", calculateTotal);

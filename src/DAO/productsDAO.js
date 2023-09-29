@@ -1,4 +1,4 @@
-import { productsModel } from "../DAO/db/model/products.model.js";
+import { productsModel } from "./db/model/products.model.js";
 
 class ProductManager {
   constructor() {
@@ -92,38 +92,38 @@ class ProductManager {
     }
   }
 
-  async deleteProductFromCart(pid, cid) {
-    try {
-      const filter = { _id: cid };
-      const update = {
-        $pull: {
-          products: { id: pid },
-        },
-      };
+  // async deleteProductFromCart(pid, cid) {
+  //   try {
+  //     const filter = { _id: cid };
+  //     const update = {
+  //       $pull: {
+  //         products: { id: pid },
+  //       },
+  //     };
 
-      const updatedCart = await this.model.updateOne(filter, update);
+  //     const updatedCart = await this.model.updateOne(filter, update);
 
-      if (updatedCart.modifiedCount === 0) {
-        return {
-          success: false,
-          message: "Carrito no encontrado",
-        };
-      }
+  //     if (updatedCart.modifiedCount === 0) {
+  //       return {
+  //         success: false,
+  //         message: "Carrito no encontrado",
+  //       };
+  //     }
 
-      const cart = await this.model.findById(cid);
-      return {
-        success: true,
-        message: "Producto eliminado del carrito",
-        cart,
-      };
-    } catch (error) {
-      console.error(error);
-      return {
-        success: false,
-        message: "Error al eliminar el producto del carrito",
-      };
-    }
-  }
+  //     const cart = await this.model.findById(cid);
+  //     return {
+  //       success: true,
+  //       message: "Producto eliminado del carrito",
+  //       cart,
+  //     };
+  //   } catch (error) {
+  //     console.error(error);
+  //     return {
+  //       success: false,
+  //       message: "Error al eliminar el producto del carrito",
+  //     };
+  //   }
+  // }
 }
 
 export default ProductManager;

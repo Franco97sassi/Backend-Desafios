@@ -1,12 +1,15 @@
 import passport from 'passport';
 import local from 'passport-local';
 import GithubStrategy from 'passport-github2'
- import { createHash, isValidPassword } from '../utils/index.js';
+import { createHash, isValidPassword } from '../utils/index.js';
 import jwt from "passport-jwt";
 import config from './config.js';
-import userManager from '../DAO/sessionDAO.js';
-const managerSession = new userManager();
+import UserServices from '../services/session.js';
 
+const CLIENTID=config.clientID
+const CLIENTSECRET=config.clientSecret
+const CALLBACKURL=config.callbackURL
+const userServices = new UserServices();
   const LocalStrategy = local.Strategy;
 // const JWTStrategy=jwt.Strategy;
 // const ExtractJWT=jwt.ExtractJwt;
@@ -18,22 +21,19 @@ const managerSession = new userManager();
 //     }
 //     return token;
 // }
-const CLIENTID=config.clientID
-const CLIENTSECRET=config.clientSecret
-const CALLBACKURL=config.callbackURL
-
+  
  const initializePassport = () => {
     passport.use("register", new LocalStrategy({
         passReqToCallback: true, usernameField: "email"
     }, async (req, username, password, done) => {
         try {
             let user = req.body;
-            let userFound = await managerSession.getByEmail(user.email);
+            let userFound = await userServices.getByEmail(user.email);
             if (userFound) {
                 return done(null, false)
             }
             user.password = createHash(user.password);
-            let result = await managerSession.createUser(user);
+            let result = await userServices.createUser(user);
             console.log(result);
             return done(null, result);
         } catch (err) {
@@ -70,9 +70,7 @@ const CALLBACKURL=config.callbackURL
 //         }
 //         );
 //          }
-    
  
-
 passport.use('login', new LocalStrategy({ usernameField: "email" }, async (username, password, done) => {
  
     // if (username === "adminCoder@coder.com" && password === "adminCod3r123") {
@@ -80,22 +78,17 @@ passport.use('login', new LocalStrategy({ usernameField: "email" }, async (usern
     //     let adminUser = { email: username, role: "admin" };
     //     return done(null, adminUser);
     // }
-    let result = await managerSession.getByEmail(username);
+    let result = await userServices.getByEmail(username);
 
     if (!result || !isValidPassword(result, password)) {
         return done(null, false);
     }
 
-    console.log(result);
-    delete result.password;
+    //  delete result.password;
     return done(null, result);
 }));
-
-
-
-
-    
-    passport.use("github", new GithubStrategy({
+ 
+ passport.use("github", new GithubStrategy({
         clientID: CLIENTID,
         clientSecret: CLIENTSECRET,
         callbackURL:CALLBACKURL,
@@ -113,7 +106,7 @@ passport.use('login', new LocalStrategy({ usernameField: "email" }, async (usern
                         age:20,
                          
                     }
-                   let result= await managerSession.createUser(newUser);
+                   let result= await userServices.createUser(newUser);
                      done(null, result);
                 }else{
                     done(null, userFound);                            
@@ -123,14 +116,13 @@ passport.use('login', new LocalStrategy({ usernameField: "email" }, async (usern
               
         }}
     ));
-    
-    
-    passport.serializeUser((user, done) => {
-        done(null, user._id);
+ passport.serializeUser((user, done) => {
+        done(null, {id:user._id,role:user.role});
     }
     );
-    passport.deserializeUser( async(id, done) => {
-        let user= await managerSession.getById(id);
+ passport.deserializeUser( async(data, done) => {
+        let user= await userServices.getById(data.id);
+        user.role=data.role
         done(null, user);
     }
     );

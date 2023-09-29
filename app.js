@@ -6,11 +6,13 @@ import mongoose from "mongoose";
 import { Server } from "socket.io";
 import ProductManager from "./src/DAO/productsDAO.js";
 import MessagesManager from "./src/DAO/messagesDAO.js";
+
 import cartRouter from "./src/routes/cart.routes.js";
 import productsRouter from "./src/routes/products.routes.js";
 import chatRouter from "./src/routes/chat.routes.js";
 import viewsRouter from "./src/routes/views.routes.js";
 import sessionRouter from "./src/routes/session.routes.js";
+
 import session from "express-session";
 import MongoStore from 'connect-mongo';
 import initializePassport from "./src/config/passport-config.js";
@@ -24,17 +26,13 @@ const PORT=config.port||8081
 const MONGO_URL=config.mongoURL
 const SECRET=config.secret
 
-const server = app.listen(PORT, () =>
-  console.log(`server running on port ${server.address().port}`)
-);
+ 
  
 mongoose.connect(MONGO_URL)
 .then(() => console.log("Conexión exitosa a la base de datos."))
     .catch((error) => console.error("Error de conexión:", error));   
 // "mongodb+srv://ltaralli:coder1234@cluster0.k7b3exc.mongodb.net/ecommerce",
-      
-
-  
+    
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
@@ -74,16 +72,16 @@ app.use(passport.session())
 app.set("views", "./src/views");
 app.set("view engine", "handlebars");
 
+//ROUTES
 app.use("/api/products", productsRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/session", sessionRouter);
 app.use("/", viewsRouter);
-
-
+//Listen
+const server = app.listen(PORT, () =>
+  console.log(`server running on port ${server.address().port}`)
+);
  
- 
- 
-
 // const db = mongoose.connection;
 
 // db.on("error", (error) => {
@@ -136,3 +134,5 @@ io.on("connection", async (socket) => {
     }
   });
 });
+
+ 

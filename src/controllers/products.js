@@ -1,7 +1,7 @@
-import ProductManager from "../DAO/productsDAO.js";
+import ProductServices from "../services/products.js";
 import { validateAddProduct } from "../utils/index.js";
 
-const manager = new ProductManager();
+const productServices = new ProductServices();
 
 export const getProducts = async (req, res) => {
   const pageBody = req.query.page || 1;
@@ -9,7 +9,7 @@ export const getProducts = async (req, res) => {
   const cat = req.query.category;
   const sort = req.query.sort || "asc";
   try {
-    let categories = await manager.getCategories();
+    let categories = await productServices.getCategories();
     categories = categories.map((category) => ({
       name: category,
       selected: category === cat,
@@ -35,7 +35,7 @@ export const getProducts = async (req, res) => {
 
 export const getProductById = async (req, res) => {
   let pid = req.params.pid;
-  let product = await manager.getProductById(pid);
+  let product = await productServices.getProductById(pid);
   if (!product) {
     return res
       .status(400)
@@ -52,7 +52,7 @@ export const addProduct = async (req, res) => {
       .send({ status: "error", msg: "Por favor, completá todos los datos" });
   } else {
     try {
-      await manager.addProduct(product);
+      await productServices.addProduct(product);
       res
         .status(200)
         .send({ status: "success", msg: "Producto agregado exitosamente" });
@@ -69,7 +69,7 @@ export const updateProduct = async (req, res) => {
   let pid = req.params.pid;
   let fields = req.body;
   try {
-    let updatedProduct = await manager.updateProduct(pid, fields);
+    let updatedProduct = await productServices.updateProduct(pid, fields);
     if (!updatedProduct) {
       res.status(404).send({ status: "error", msg: "El producto no existe" });
     }
@@ -84,7 +84,7 @@ export const updateProduct = async (req, res) => {
 
 export const deletedProduct = async (req, res) => {
   const pid = req.params.pid;
-  const deletedProduct = await manager.deleteProduct(pid);
+  const deletedProduct = await productServices.deleteProduct(pid);
   if (!deletedProduct) {
     res.status(404).send({ status: "error", msg: "El producto no existe" });
   } else {

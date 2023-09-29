@@ -1,14 +1,15 @@
-import ProductManager from "../DAO/productsDAO.js";
-import CartManager from "../DAO/cartsDAO.js";
-import userManager from "../DAO/sessionDAO.js";
-
-const manager = new ProductManager();
-const managerCart = new CartManager();
-const managerSession = new userManager();
+import ProductServices from "../services/products.js";
+import CartServices from "../services/cart.js";
+import UserServices from "../services/session.js";
+import TicketServices from "../services/ticket.js"
+const productServices = new ProductServices();
+const cartServices = new CartServices();
+const userServices = new UserServices();
+const ticketServices = new TicketServices();
 
 export const getProducts = async (req, res) => {
   try {
-    let result = await manager.getProducts();
+    let result = await productServices.getProducts();
     res.render("index", { products: result });
   } catch (error) {
     console.error(error);
@@ -25,7 +26,7 @@ export const getProductsRealTime = async (req, res) => {
   if (!pageBody) pageBody = 1;
   try {
     let limit = req.query.limit;
-    let result = await manager.getProducts(pageBody);
+    let result = await productServices.getProducts(pageBody);
     const data = {
       products: result.docs,
       hasPrevPage: result.hasPrevPage,
@@ -47,14 +48,14 @@ export const getProductsViews = async (req, res) => {
   const cat = req.query.category;
   const sort = req.query.sort || "asc";
   try {
-    let categories = await manager.getCategories();
+    let categories = await productServices.getCategories();
     categories = categories.map((category) => ({
       name: category,
       selected: category === cat,
     }));
-    let result = await manager.getProducts(pageBody, limit, cat, sort);
+    let result = await productServices.getProducts(pageBody, limit, cat, sort);
 
-    let user = await managerSession.getByEmail(req.session.user.email);
+    let user = await userServices.getByEmail(req.session.user.email);
     let role = req.session.user.role;
     const data = {
       products: result.docs,
@@ -84,7 +85,7 @@ export const getCart = async (req, res) => {
   const cid = req.params.cid;
   let cart;
   try {
-    cart = await managerCart.getCart(cid);
+    cart = await cartServices.getCart(cid);
 
     res.render("cart", cart);
   } catch (error) {
@@ -108,7 +109,7 @@ export const register = async (req, res) => {
 };
 
 export const profile = async (req, res) => {
-  let user = await managerSession.getByEmail(req.session.user.email);
+  let user = await userServices.getByEmail(req.session.user.email);
   res.render("profile", user);
 };
 
@@ -125,3 +126,13 @@ export const failRegister = async (req, res) => {
 export const failLogin = async (req, res) => {
   res.render("login-error", {});
 };
+export const getTicketByOrder=async(req,res)=>{
+  const orderCode=req.params.tcode;
+  let ticket
+  try {
+    ticket=await ticketServices.getTicketByOrder(orderCode)
+    res.send(ticket)
+  } catch (error) {
+    res.status(500).send("error interno del servidor")
+  }
+}

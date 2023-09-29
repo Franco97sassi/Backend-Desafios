@@ -1,5 +1,5 @@
-import userManager from "../DAO/sessionDAO.js";
-const managerSession = new userManager();
+import UserServices from "../services/session.js";
+const userServices = new UserServices();
 
 export const register = async (req, res) => {
   res.redirect("/login");
@@ -22,7 +22,7 @@ export const current = async (req, res) => {
   let user = req.session.user;
   let result;
   try {
-    result = await managerSession.getUser(user.email);
+    result = await userServices.getUser(user.email);
     if (!result) {
       return res.status(400).send({
         status: "error",
