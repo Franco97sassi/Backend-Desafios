@@ -43,8 +43,7 @@ function getCartId(){
 }
 async function purchase(){
     const cartId=await getCartId()
-    console.log(cartId);
-    fetch(`/api/cart/${cartId}/purchase`,{
+     fetch(`/api/cart/${cartId}/purchase`,{
         method:"POST"
     })
     .then(function(response){

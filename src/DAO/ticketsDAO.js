@@ -18,6 +18,7 @@ try {
     const createdTicket=await this.model.create(ticketData)
     return createdTicket
 } catch (error) {
+    logger.error(`${error}`);
     return{
         success:false,
         message:`Ocurrio un error al crear al ticket`

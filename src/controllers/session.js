@@ -1,4 +1,5 @@
 import UserServices from "../services/session.js";
+import logger from "../utils/logger.js"
 const userServices = new UserServices();
 
 export const register = async (req, res) => {
@@ -29,8 +30,13 @@ export const current = async (req, res) => {
         error: "No se encuentra el usuario en la session",
       });
     }
+    return res.send({ status: "success", payload: result });
+
   } catch (error) {
-    console.log(error);
+     logger.error(`${error}`);
+    return res.status(400).send({
+      status:"error",
+      error:"No se encuentra el usuario en la session "
+    })
   }
-  return res.send({ status: "success", payload: result });
-};
+ };

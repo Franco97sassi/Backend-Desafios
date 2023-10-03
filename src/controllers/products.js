@@ -1,6 +1,8 @@
 import ProductServices from "../services/products.js";
 import { validateAddProduct } from "../utils/index.js";
-
+import CustomError from "../services/errors/customError.js";
+import EErrors from "../services/errors/enums.js";
+import {generateProductsErrorInfo} from "../services/errors/info.js"
 const productServices = new ProductServices();
 
 export const getProducts = async (req, res) => {
@@ -47,10 +49,21 @@ export const getProductById = async (req, res) => {
 export const addProduct = async (req, res) => {
   let product = req.body;
   if (!validateAddProduct(product)) {
-    res
-      .status(400)
-      .send({ status: "error", msg: "Por favor, completá todos los datos" });
-  } else {
+    
+    try {
+    CustomError.createError({
+      name:"error al añadir el producto",
+      cause:generateProductsErrorInfo(product),
+      message:"error al intentar añadir al producto",
+      code:EErrors.INVALID_TYPES_ERROR
+    })
+    } catch (error) {
+      res.status(400).send({
+        status: "error",
+        msg: error.message,
+      });
+    }
+  }else{
     try {
       await productServices.addProduct(product);
       res
@@ -62,6 +75,7 @@ export const addProduct = async (req, res) => {
         msg: `El código ${product.code} ya fue ingresado, por favor ingresa otro diferente`,
       });
     }
+
   }
 };
 

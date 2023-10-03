@@ -1,5 +1,6 @@
 import { cartsModel } from "./db/model/carts.model.js";
 import { productsModel } from "./db/model/products.model.js";
+import logger from "../utils/logger.js"
 import ProductManager from "./productsDAO.js"
 class CartManager {
   constructor() {
@@ -20,7 +21,7 @@ class CartManager {
       const cart = await this.model.findById(id).populate("products._id");
 
       if (!cart) {
-        console.log(`No se encontró ningún carrito con el id: ${id}`);
+        logger.error(`No se encontró ningún carrito con el id: ${id}`);
       }
 
       return cart;
@@ -257,6 +258,7 @@ class CartManager {
   async unprocessedProducts(cid, productsNotPurchase) {
     try {
       if (!productsNotPurchase || productsNotPurchase.length === 0) {
+        logger.info("no hay productos no comprados para eliminar")
         return {
           success: true,
           message: "no hay productos no comprados para eliminar del carrito"
@@ -270,7 +272,7 @@ class CartManager {
         { $pull: { products: { _id: { $in: productIdsNotPurchase } } } }, { new: true })
 
       if (!updatedCart) {
-        console.log("carrito no encontrado");
+        logger.info("carrito no encontrado")
       }
       return {
         success: true,
@@ -279,7 +281,8 @@ class CartManager {
 
 
     } catch (error) {
-      return {
+      logger.error(`${error}`);
+            return {
         success: false,
         message: "ocurrio un error al actualizar el carrito"
       }

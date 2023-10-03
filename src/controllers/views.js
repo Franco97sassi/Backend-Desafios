@@ -2,6 +2,9 @@ import ProductServices from "../services/products.js";
 import CartServices from "../services/cart.js";
 import UserServices from "../services/session.js";
 import TicketServices from "../services/ticket.js"
+import {generateproducts} from "../mocks/products.js"
+import logger from "../utils/logger.js"
+
 const productServices = new ProductServices();
 const cartServices = new CartServices();
 const userServices = new UserServices();
@@ -135,4 +138,24 @@ export const getTicketByOrder=async(req,res)=>{
   } catch (error) {
     res.status(500).send("error interno del servidor")
   }
+}
+export const getProductsMocks=async(req,res)=>{
+  try {
+    const product = await generateproducts(100)
+    res.send(products)
+  } catch (error) {
+    logger.error(error);
+  }
+}
+
+export const loggerTest=async(req,res)=>{
+  req.logger.fatal("Testeo de error:fatal");
+  req.logger.error("Testeo de error:error");
+  req.logger.warning("Testeo de error: warning");
+  req.logger.info("Testeo de error: info");
+  req.logger.http("Testeo de error: http");
+  req.logger.debug("Testeo de error :debug");
+  res.send("Test de logger ejecutado")
+
+
 }

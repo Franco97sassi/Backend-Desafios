@@ -10,7 +10,7 @@ class MessagesManager {
     try {
       msg = await this.model.create(message);
     } catch (error) {
-      console.log(error);
+      logger.error(`${error}`);
     }
     return msg;
   }

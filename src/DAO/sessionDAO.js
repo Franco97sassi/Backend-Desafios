@@ -10,8 +10,7 @@ class userManager {
     try {
       result = await this.model.find();
     } catch (error) {
-      console.log(error);
-    }
+      logger.error(`${error}`);    }
     return result;
   }
 
@@ -20,28 +19,26 @@ class userManager {
     try {
       result = await this.model.findOne({ email: email });
     } catch (error) {
-      console.log(error);
-    }
+      logger.error(`${error}`);    }
     return result;
   }
 
   //se comenta este?
-  async getUser(email) {
-    let result;
-    try {
-      result = await this.model.findOne({ email: email }).select("-password");
-    } catch (error) {
-      console.log(error);
-    }
-    return result;
-  }
+  // async getUser(email) {
+  //   let result;
+  //   try {
+  //     result = await this.model.findOne({ email: email }).select("-password");
+  //   } catch (error) {
+  //     logger.error(`${error}`);    }
+  //   return result;
+  // }
 
   async getById(id) {
     let result;
     try {
       result = await this.model.findOne({ _id: id });
     } catch (error) {
-      console.log(error);
+      logger.error(`${error}`);
     }
     return result;
   }
@@ -51,8 +48,7 @@ class userManager {
     try {
       result = this.model.create(user);
     } catch (error) {
-      console.log(error);
-    }
+      logger.error(`${error}`);    }
     return result;
   }
 }

@@ -19,7 +19,7 @@ class ProductManager {
     const products = await this.getProducts();
     const product = products.find((product) => product.id === parseInt(id));
     if (!product) {
-      console.log(`No se encontró ningún producto con el id: ${id}`);
+      logger.info(`No se encontró ningún producto con el id: ${id}`);
     }
     return product;
   }
@@ -65,7 +65,7 @@ class ProductManager {
 
       product = { ...products[index] };
       await fs.writeFileSync(this.path, JSON.stringify(products));
-      console.log("product after:", products[index]);
+      logger.info("product after:", products[index]);
     } catch (error) {
       throw error;
     }

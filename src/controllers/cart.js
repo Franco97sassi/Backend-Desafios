@@ -83,8 +83,7 @@ export const createCart = async (req, res) => {
       cartId: cart._id,
       msg: "Carrito creado correctamente",
     });
-    console.log(cart);
-  } catch (error) {
+   } catch (error) {
     throw error;
   }
 };

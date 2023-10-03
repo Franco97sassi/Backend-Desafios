@@ -13,6 +13,8 @@ import {
   failRegister,
   failLogin,
   getTicketByOrder,
+  getProductsMocks,
+  loggerTest
 } from "../controllers/views.js";
 import { authMiddleware, isAdmin, isUser } from "../middlewares/auth.js";
 
@@ -34,5 +36,8 @@ viewsRouter.get("/profile", authMiddleware, profile);
 viewsRouter.get("/logout", logout);
 viewsRouter.get("/failregister", failRegister);
 viewsRouter.get("/faillogin", failLogin);
+viewsRouter.get("/mockingproducts", getProductsMocks);
+viewsRouter.get("/loggerTest", loggerTest);
+
 
 export default viewsRouter;

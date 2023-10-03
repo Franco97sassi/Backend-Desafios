@@ -6,26 +6,28 @@ import mongoose from "mongoose";
 import { Server } from "socket.io";
 import ProductManager from "./src/DAO/productsDAO.js";
 import MessagesManager from "./src/DAO/messagesDAO.js";
-
 import cartRouter from "./src/routes/cart.routes.js";
 import productsRouter from "./src/routes/products.routes.js";
 import chatRouter from "./src/routes/chat.routes.js";
 import viewsRouter from "./src/routes/views.routes.js";
 import sessionRouter from "./src/routes/session.routes.js";
-
 import session from "express-session";
 import MongoStore from 'connect-mongo';
 import initializePassport from "./src/config/passport-config.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import config from "./src/config/config.js"
-const app = express();
+import errorHandle from "./src/middlewares/errors/index.js"
+import{addLogger} from "./src/utils/logger.js"
+import logger from "./src/utils/logger.js"
+ 
 
-//variables de entorno
+ //variables de entorno
 const PORT=config.port||8081
 const MONGO_URL=config.mongoURL
 const SECRET=config.secret
-
+const app = express();
+app.use(addLogger)
  
  
 mongoose.connect(MONGO_URL)
@@ -38,6 +40,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 
 app.use(express.static("public"));
+ 
 app.engine(
   "handlebars",
   handlebars.engine({
@@ -77,9 +80,10 @@ app.use("/api/products", productsRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/session", sessionRouter);
 app.use("/", viewsRouter);
+app.use(errorHandle)
 //Listen
 const server = app.listen(PORT, () =>
-  console.log(`server running on port ${server.address().port}`)
+  logger.info(`server running on port ${server.address().port}`)
 );
  
 // const db = mongoose.connection;
@@ -89,7 +93,7 @@ const server = app.listen(PORT, () =>
 // });
 
 // db.once("open", () => {
-//   console.log("Conexión exitosa a la base de datos.");
+//   logger.log("Conexión exitosa a la base de datos.");
 // });
 
 const io = new Server(server);
@@ -98,7 +102,7 @@ const managerMsg = new MessagesManager();
 const message = [];
 
 io.on("connection", async (socket) => {
-  console.log("nuevo cliente conectado");
+  logger.log("nuevo cliente conectado");
   const products = await manager.getProducts();
   io.emit("productList", products);
   

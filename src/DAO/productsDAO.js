@@ -27,7 +27,7 @@ class ProductManager {
         products = await this.model.paginate(query, options);
       }
     } catch (error) {
-      console.log(error);
+      logger.error(`${error}`);
     }
 
     return products;
@@ -38,10 +38,10 @@ class ProductManager {
     try {
       product = await this.model.findOne({ _id: id });
       if (!product) {
-        console.log(`No se encontró ningún producto con el id: ${id}`);
+        logger.info(`No se encontró ningún producto con el id: ${id}`);
       }
     } catch (error) {
-      console.log(error);
+       logger.error(`${error}`);
     }
     return product;
   }
@@ -57,8 +57,7 @@ class ProductManager {
       }
       producto = await this.model.create(product);
     } catch (error) {
-      console.log(error);
-    }
+      logger.error(`${error}`);    }
     return producto;
   }
 
@@ -67,8 +66,7 @@ class ProductManager {
     try {
       product = await this.model.updateOne({ _id: pid }, fields);
     } catch (error) {
-      console.log(error);
-    }
+      logger.error(`${error}`);    }
     return product;
   }
 
@@ -77,8 +75,7 @@ class ProductManager {
     try {
       deletedProduct = await this.model.deleteOne({ _id: pid });
     } catch (error) {
-      console.log(error);
-    }
+      logger.error(`${error}`);    }
     return deletedProduct;
   }
 
