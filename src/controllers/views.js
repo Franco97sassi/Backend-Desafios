@@ -159,3 +159,10 @@ export const loggerTest=async(req,res)=>{
 
 
 }
+export const forgotPass = async (req, res) => {
+  res.render("forgot-password", {});
+};
+
+export const resetPass = async (req, res) => {
+  res.render("reset-password", {});
+};

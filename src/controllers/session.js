@@ -1,5 +1,7 @@
 import UserServices from "../services/session.js";
-import logger from "../utils/logger.js"
+import logger from "../utils/logger.js";
+import { createHash, isValidPassword } from "../utils/index.js";
+
 const userServices = new UserServices();
 
 export const register = async (req, res) => {
@@ -40,3 +42,60 @@ export const current = async (req, res) => {
     })
   }
  };
+ export const forgotPassword = async (req, res) => {
+  let { email } = req.body;
+  try {
+    const user = await userServices.getUser(email);
+    if (!user) {
+      return res
+        .status(400)
+        .send({ error: "No se encontró una cuenta asociada a ese email" });
+    }
+    let result = userServices.sendEmailResetPassword(user.email);
+    if (!result) {
+      return res.status(400).send({
+        error: "No pudo enviarse el correo de recupero de contraseña",
+      });
+    }
+    return res.send({
+      status: "success",
+      msg: "Correo enviado satisfactoriamente",
+    });
+  } catch (error) {
+    logger.error(`${error}`);
+    return res.status(400).send({
+      status: "error",
+      error: "No hemos podido procesar la petiión",
+    });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const { newPassword, token } = req.body;
+  try {
+    const user = await userServices.getUserByResetToken(token);
+
+    if (!user) {
+      return res.status(400).send({ error: "Token inválido o expirado" });
+    }
+
+    if (isValidPassword(user, newPassword)) {
+      return res.status(400).send({
+        error: "La nueva contraseña no puede ser igual a la anterior",
+      });
+    }
+    user.password = await createHash(newPassword);
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+    const result = await userServices.resetPassword(user._id, user);
+    return res.send({
+      status: "success",
+      msg: "Contraseña restablecida correctamente",
+    });
+  } catch (error) {
+    return res.status(400).send({
+      status: "error",
+      error: "No hemos podido procesar la petiión",
+    });
+  }
+};

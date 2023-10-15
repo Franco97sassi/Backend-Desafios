@@ -1,5 +1,5 @@
 import { productsModel } from "./db/model/products.model.js";
-
+import logger from "../utils/logger.js"
 class ProductManager {
   constructor() {
     this.model = productsModel;

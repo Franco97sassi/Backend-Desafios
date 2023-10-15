@@ -6,7 +6,8 @@ import {
   login,
   github,
   githubCallback,
-  current,
+  current,  forgotPassword,
+  resetPassword,
 } from "../controllers/session.js";
 
 const sessionRouter = Router();
@@ -36,5 +37,6 @@ sessionRouter.get(
 );
 
 sessionRouter.get("/current", current);
-
+sessionRouter.post("/forgot-password", forgotPassword);
+sessionRouter.post("/reset-password", resetPassword);
 export default sessionRouter;

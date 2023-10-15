@@ -1,0 +1,5 @@
+ {"level":"fatal","message":"Testeo de error:fatal"}
+{"level":"error","message":"Testeo de error:error"}
+{"level":"error","message":"No se encontró ningún carrito con el id: 64ac33987ccb929b010dd699"}
+{"level":"error","message":"No se encontró ningún carrito con el id: 64ac33987ccb929b010dd699"}
+{"level":"error","message":"Error: self-signed certificate in certificate chain"}

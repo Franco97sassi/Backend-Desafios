@@ -11,7 +11,9 @@ const userSchema = new mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:"cart"
     }},
-    role:{type:String,default:"user"}
+    role:{type:String,default:"user"},
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
 });
 
 export const userModel = mongoose.model(userCollection, userSchema)
