@@ -1,0 +1,204 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtiene todos los productos
+      tags:
+        - Products
+      parameters:
+        - name: limit
+          in: query
+          description: Número máximo de productos a obtener
+          required: false
+          schema:
+            type: integer
+        - name: category
+          in: query
+          description: Categoría de los productos
+          required: false
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Orden de clasificación (ascendente o descendente)
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+      responses:
+        "200":
+          description: Los productos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: "#components/schemas/Products"
+                  hasPrevPage:
+                    type: boolean
+                  prevPage:
+                    type: integer
+                  hasNextPage:
+                    type: boolean
+                  nextPage:
+                    type: integer
+                  page:
+                    type: integer
+                  prevLink:
+                    type: string
+                  nextLink:
+                    type: string
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos
+
+    put:
+      summary: Actualiza un producto mediante su id
+      tags:
+        - Products
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: id del producto a actualizar
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/productsInput"
+      responses:
+        "200":
+          description: Producto actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Products"
+        "404":
+          description: Producto no encontrado
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos
+
+    post:
+      summary: Agrega un nuevo producto
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/productsInput"
+      responses:
+        "201":
+          description: Producto creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Products"
+        "400":
+          description: Error al agregar un producto, por codigo duplicado o inconsistencia de campos
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos
+
+  /api/products/{uid}:
+    get:
+      summary: Obtiene un producto en base al uid recibido
+      tags:
+        - Products
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: id del producto a buscar
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Los productos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Products"
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos
+    delete:
+      summary: Elimina un producto
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: ID del producto que se desea eliminar.
+components:
+  schemas:
+    Products:
+      type: object
+      properties:
+        _id:
+          type: objectId
+          description: Id autogenerado por Mongo
+        titulo:
+          type: string
+          description: Titulo del producto
+        description:
+          type: String
+          description: Descripcioón del producto
+        category:
+          type: String
+          description: Categoria del producto
+        price:
+          type: Number
+          description: Precio del Producto
+        code:
+          type: String
+          description: Codigo único por producto
+        stock:
+          type: Number
+          description: Cantidad de unidades disponibles del producto
+        thumbnails:
+          type: String
+          description: Imagenes del producto
+        owner:
+          type: String
+          description: Creador del producto
+        status:
+          type: Bolean
+          description: Estado del producto
+      example:
+        _id: ObjectId("648e5e2148088ca60ac11595")
+        titulo: Adidas Superstar
+        description: Zapatillas clásicas con diseño icónico, parte superior de cuero y puntera de goma distintiva.
+        category: Calzado
+        price: 79.99
+        code: SUPERSTAR
+        stock: 781
+        thumbnails: https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/7ed0855435194229a525aad6009a0497_9366/Zapatillas_Superstar_Blanco_EG4958_01_standard.jpg
+        owner: franco.sassi97@gmail.com
+        status: true
+  requestBodies:
+    productsInput:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Titulo del producto
+      example:
+        _id: ObjectId("648e5e2148088ca60ac11595")
+        titulo: Adidas Superstar
+        description: Zapatillas clásicas con diseño icónico, parte superior de cuero y puntera de goma distintiva.
+        category: Calzado
+        price: 79.99
+        code: SUPERSTAR
+        stock: 781
+        thumbnails: https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/7ed0855435194229a525aad6009a0497_9366/Zapatillas_Superstar_Blanco_EG4958_01_standard.jpg
+        owner: franco.sassi97@gmail.com
+        status: true

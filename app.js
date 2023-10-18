@@ -20,21 +20,26 @@ import config from "./src/config/config.js"
 import errorHandle from "./src/middlewares/errors/index.js"
 import{addLogger} from "./src/utils/logger.js"
 import logger from "./src/utils/logger.js"
- 
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
+import { swaggerOptions } from './src/docs/utils/swagger-options.js';
 
  //variables de entorno
 const PORT=config.port||8081
 const MONGO_URL=config.mongoURL
 const SECRET=config.secret
+
 const app = express();
-app.use(addLogger)
- 
+const specs = swaggerJsDoc(swaggerOptions);
+
+  
  
 mongoose.connect(MONGO_URL)
 .then(() => console.log("Conexión exitosa a la base de datos."))
     .catch((error) => console.error("Error de conexión:", error));   
 // "mongodb+srv://ltaralli:coder1234@cluster0.k7b3exc.mongodb.net/ecommerce",
-    
+
+app.use(addLogger)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
@@ -72,6 +77,8 @@ app.use(session({
 }))
 app.use(passport.initialize());
 app.use(passport.session())
+
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 app.set("views", "./src/views");
 app.set("view engine", "handlebars");
 

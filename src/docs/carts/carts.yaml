@@ -1,0 +1,90 @@
+paths:
+  /api/cart:
+    get:
+      summary: Obtiene todos los carrtios
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Los carritos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  carts:
+                    type: array
+                    items:
+                      $ref: "#components/schemas/Carts"
+                  status:
+                    type: String
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos
+
+    post:
+      summary: Crea un nuevo carrito en la DB
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Carrito creado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Carts"
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos
+
+components:
+  schemas:
+    Carts:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID autogenerado por Mongo, que referencia products
+        cart:
+          type: object
+          properties:
+            product:
+              type: string
+              description: ID del producto en el carrito
+            quantity:
+              type: integer
+              description: Cantidad del producto existente en el carrito
+      example:
+        _id: "64dedef90012284fcf303ff3"
+        cart:
+          - product: "64906850fa886ebbabd697cc"
+            quantity: 1
+    # cartItem:
+    #   type: object
+    #   properties:
+    #     _id:
+    #       type: string
+    #       description: ID del producto
+    #     quantity:
+    #       type: integer
+    #       description: Cantidad del producto en el carrito
+    #   example:
+    #     - _id: "64906850fa886ebbabd697cd"
+    #       quantity: 5
+
+  requestBodies:
+    user:
+      description: Datos del usuario para la compra
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    description: Correo electrónico del comprador
+      example:
+        user:
+          email: correo_ejemplo@gmail.com
