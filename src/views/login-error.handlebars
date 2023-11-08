@@ -1,7 +1,15 @@
-<div class="container text-center my-3">
-    <div class="jumbotron" style="background-color: salmon;color: white;">
-        <h1>USER ERROR LOGIN</h1>
-
-        <button class="btn btn-warning my-5" onclick="location.href='/login'">VOLVER</button>
+<div class="flex items-center justify-center h-screen">
+  <div class="card-login-failed p-8 shadow-lg rounded-lg">
+    <h2 class="text-center mb-4 text-2xl font-bold">Error de inicio de sesión</h2>
+    <div
+      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+      role="alert"
+    >
+      <strong class="font-bold">Error:</strong>
+      <span class="block sm:inline">Credenciales inválidas. Inténtalo de nuevo.</span>
     </div>
+    <div class="pt-6">
+      <a href="/login" class="btn btn-accent w-full">Volver al inicio de sesión</a>
+    </div>
+  </div>
 </div>

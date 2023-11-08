@@ -5,8 +5,8 @@ export default class TicketServices {
     this.dao = new ticketManager();
   }
 
-  async createTicket(uid, productsToPurchase) {
-    let result = await this.dao.createTicket(uid, productsToPurchase);
+  async createTicket(productsToPurchase, uid) {
+    let result = await this.dao.createTicket(productsToPurchase, uid);
     return result;
   }
 

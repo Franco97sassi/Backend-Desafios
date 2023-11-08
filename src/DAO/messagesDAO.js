@@ -1,3 +1,4 @@
+import logger from "../utils/logger.js";
 import { messagesModel } from "./db/model/messages.model.js";
 
 class MessagesManager {

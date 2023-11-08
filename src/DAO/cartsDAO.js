@@ -1,7 +1,10 @@
 import { cartsModel } from "./db/model/carts.model.js";
 import { productsModel } from "./db/model/products.model.js";
-import logger from "../utils/logger.js"
-import ProductManager from "./productsDAO.js"
+import ProductManager from "./productsDAO.js";
+import logger from "../utils/logger.js";
+
+const productManager = new ProductManager();
+
 class CartManager {
   constructor() {
     this.model = cartsModel;
@@ -67,7 +70,7 @@ class CartManager {
         message: "Producto agregado al carrito",
       };
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       return {
         success: false,
         message: "Error al agregar el producto al carrito",
@@ -76,8 +79,9 @@ class CartManager {
   }
 
   async createCart() {
+    let newCart;
     try {
-      const newCart = {
+      newCart = {
         products: [],
       };
       const createdCart = await this.model.create(newCart);
@@ -98,9 +102,18 @@ class CartManager {
         };
       }
 
-      cart.products = cart.products.filter(
-        (product) => product._id.toString() !== pid
+      const productIndex = cart.products.findIndex(
+        (product) => product._id.toString() === pid
       );
+
+      if (productIndex === -1) {
+        return {
+          success: false,
+          message: "El producto no está presente en el carrito",
+        };
+      }
+
+      cart.products.splice(productIndex, 1);
 
       await cart.save();
 
@@ -110,7 +123,7 @@ class CartManager {
         cart,
       };
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       return {
         success: false,
         message: "Error al eliminar el producto del carrito",
@@ -123,7 +136,6 @@ class CartManager {
       const filter = { cid };
       const update = { products };
       const options = { new: true };
-
       const updatedCart = await this.model.findByIdAndUpdate(
         cid,
         update,
@@ -143,7 +155,7 @@ class CartManager {
         cart: updatedCart,
       };
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       return {
         success: false,
         message: "Error al actualizar el carrito",
@@ -174,7 +186,7 @@ class CartManager {
         cart: updatedCart,
       };
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       return {
         success: false,
         message: "Error al actualizar la cantidad de producto en el carrito",
@@ -201,7 +213,7 @@ class CartManager {
         message: "Productos eliminados del carrito correctamente",
       };
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       return {
         success: false,
         message: "Error al eliminar los productos del carrito",
@@ -211,84 +223,95 @@ class CartManager {
 
   async verifyPurchase(cid) {
     try {
-      const cart = await this.model.findById(cid)
+      const cart = await this.model.findById(cid);
       const productsToPurchase = [];
       const productsNotPurchase = [];
+
       for (const product of cart.products) {
-        const productData = await productsModel.findById(product._id)
+        const productData = await productsModel.findById(product._id);
+        const productInfo = {
+          _id: product._id,
+          title: productData.title,
+          price: productData.price,
+          quantity: product.quantity,
+        };
+
         if (productData.stock >= product.quantity) {
-          const productToPurchase = {
-            _id: product._id,
-            price: productData.price,
-            quantity: product.quantity
-          }
-          productsToPurchase.push(productToPurchase)
+          productsToPurchase.push(productInfo);
         } else {
-          productsNotPurchase.push(product)
+          productsNotPurchase.push(productInfo);
         }
       }
+
+      return { productsToPurchase, productsNotPurchase };
     } catch (error) {
+      logger.error(`${error}`);
       return {
         success: false,
-        message: `Ocurrio un error al verificar la compra`
-      }
+        message: `Ocurrió un error al verificar la compra: ${error}`,
+      };
     }
   }
+
   async processPurchase(productsToPurchase) {
     try {
       for (const product of productsToPurchase) {
-        const productData = await productsModel.findById(product._id)
-        const newStock = productData.stock - product.quantity
+        const productData = await productsModel.findById(product._id);
+        const newStock = productData.stock - product.quantity;
         await productsModel.updateOne(
           { _id: product._id },
           { stock: newStock }
-        )
+        );
       }
+
       return {
         success: true,
-        message: "productos procesados exitosamente"
-      }
+        message: "Productos procesados exitosamente.",
+      };
     } catch (error) {
+      logger.error(`${error}`);
       return {
         success: false,
-        message: "ocurrio un error al actualizar stock"
-      }
+        message: `Ocurrió un error al actualizar el stock de los productos: ${error}`,
+      };
     }
   }
+
   async unprocessedProducts(cid, productsNotPurchase) {
     try {
       if (!productsNotPurchase || productsNotPurchase.length === 0) {
-        logger.info("no hay productos no comprados para eliminar")
+        logger.info("No hay productos no comprados para eliminar.");
         return {
           success: true,
-          message: "no hay productos no comprados para eliminar del carrito"
-        }
-
+          message: "No hay productos no comprados para eliminar del carrito.",
+        };
       }
+
       const productIdsNotPurchase = productsNotPurchase.map(
         (product) => product._id
-      )
-      const updatedCart = await this.model.findByIdAndUpdate(cid,
-        { $pull: { products: { _id: { $in: productIdsNotPurchase } } } }, { new: true })
+      );
+
+      const updatedCart = await this.model.findByIdAndUpdate(
+        cid,
+        { $pull: { products: { _id: { $in: productIdsNotPurchase } } } },
+        { new: true }
+      );
 
       if (!updatedCart) {
-        logger.info("carrito no encontrado")
+        logger.info(`Carrito no encontrado`);
       }
+
       return {
         success: true,
-        message: "productos no comprados eliminados del carrito exitosamente"
-      }
-
-
+        message: "Productos no comprados eliminados del carrito exitosamente.",
+      };
     } catch (error) {
       logger.error(`${error}`);
-            return {
+      return {
         success: false,
-        message: "ocurrio un error al actualizar el carrito"
-      }
+        message: `Ocurrió un error al actualizar el carrito con los productos no comprados: ${error}`,
+      };
     }
   }
-
 }
-
 export default CartManager;

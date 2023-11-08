@@ -1,20 +1,12 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
-const ticketsCollection = "tickets";
+const ticketCollection = "tickets";
 
-const TicketsSchema = new mongoose.Schema({
- code: {
-    type: String,
-   },
- purchase_dateTime:  {
-    type: Date,
-   },  
-  amount: {
-    type: Number,
-   },
-  purchaser: {
-    type: String,
-   } 
+const TicketSchema = new mongoose.Schema({
+  code: String,
+  purchase_datetime: Date,
+  amount: Number,
+  purchaser: String,
 });
 
-export const ticketsModel = mongoose.model(ticketsCollection, TicketsSchema);
+export const ticketsModel = mongoose.model(ticketCollection, TicketSchema);

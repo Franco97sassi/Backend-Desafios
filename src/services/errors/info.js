@@ -1,12 +1,10 @@
-export const generateProductsErrorInfo=(product)=>{
-    return `Propiedades incompletas o invalidas
-    La lista de propiedades requeridas son:
-    *Titulo:debe ser un string se recibio:${product.title}
-    *Descripcion:debe ser un string se recibio:${product.description}
-    *Categoria:debe ser un string se recibio:${product.category}
-    *price:debe ser un string se recibio:${product.price}
-    *Codigo:debe ser un string se recibio:${product.code}
-    *Stock:debe ser un string se recibio:${product.stock}
-
-    `
- }
+export const generateProductsErrorInfo = (product) => {
+    return `Una o mas propiedades estan incompletas o no son validas.  
+      La lista de propiedades requeridas son: 
+      * Título: debe ser un string, se recibió ${product.title}
+      * Descripción: debe ser un string, se recibió ${product.description}
+      * Categoría: debe ser un string, se recibió ${product.category}
+      * price: debe ser un number, se recibió ${product.price}
+      * Código: debe ser un string único, se recibió ${product.code}
+      * Stock: debe ser un number, se recibió ${product.stock}`;
+  };

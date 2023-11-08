@@ -1,7 +1,18 @@
-<div class="container text-center my-3">
-    <div class="jumbotron" style="background-color: salmon;color: white;">
-        <h1>USER ERROR SIGNUP</h1>
-
-        <button class="btn btn-warning my-5" onclick="location.href='/register'">VOLVER</button>
+<div class="flex items-center justify-center h-screen">
+  <div class="p-8 rounded-lg shadow-lg w-96">
+    <h2 class="text-center mb-4 text-2xl font-bold text-white-800">Correo ya
+      registrado</h2>
+    <div
+      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+      role="alert"
+    >
+      <strong class="font-bold">Error:</strong>
+      El correo
+      <strong class="font-semibold">{{email}}</strong>
+      ya está registrado. Por favor, utiliza otro correo.
     </div>
+    <div class="pt-2">
+      <a href="/login" class="btn btn-accent w-full">Volver al inicio de sesión</a>
+    </div>
+  </div>
 </div>

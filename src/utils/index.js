@@ -17,23 +17,29 @@ export const validateAddProduct = (product) => {
   return result;
 };
 
-export const createHash= password => bcrypt.hashSync(password, bcrypt.genSaltSync(10)) 
-export const validatePassword=(user,password)=>{
-  return true
-}
- export const isValidPassword = (user, password) => bcrypt.compareSync(password, user.password);
+export const createHash = (password) =>
+  bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
- export const calculateTotalAmount=(productsToPurchase)=>{
-  let totalAmount=0;
-  for (const product of productsToPurchase) {
-    totalAmount+=product.price*product.quantity
+export const isValidPassword = (user, password) =>
+  bcrypt.compareSync(password, user.password);
+
+export const calculateTotalAmount = (productsToPurchase) => {
+  if (!Array.isArray(productsToPurchase)) {
+    productsToPurchase = [productsToPurchase];
   }
-  return totalAmount
- }
+  let totalAmount = 0;
+  for (const product of productsToPurchase) {
+    totalAmount += product.price * product.quantity;
+  }
 
- export const generateUniqueCode=()=>{
-  const timestamp=Date.now()
-  const randomSuffix=Math.floor(Math.random()*1000)
-  const code=`ORDER-${timestamp}-${randomSuffix}`
-  return code
- }
+  totalAmount = totalAmount.toFixed(2);
+
+  return totalAmount;
+};
+
+export const generateUniqueCode = () => {
+  const timestamp = Date.now();
+  const ramdomSuffix = Math.floor(Math.random() * 1000);
+  const code = `ORDER-${timestamp}-${ramdomSuffix}`;
+  return code;
+};

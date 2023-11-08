@@ -1,0 +1,148 @@
+<body class="bg-100 p-10 flex justify-center items-center h-screen">
+  <div class="navbar bg-base-100 p-4">
+    <!-- ... Contenido de la barra de navegación ... -->
+    <div class="navbar-start">
+      <div class="dropdown">
+        <label tabindex="0" class="btn btn-ghost lg:hidden">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h8m-8 6h16"
+            /></svg>
+        </label>
+        <ul
+          tabindex="0"
+          class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+        >
+          <li><a>Item 1</a></li>
+          <li>
+            <a>Parent</a>
+            <ul class="p-2">
+              <li><a>Submenu 1</a></li>
+              <li><a>Submenu 2</a></li>
+            </ul>
+          </li>
+          <li>
+            <a>Parent2</a>
+            <ul class="p-2">
+              <li><a>Submenu 1</a></li>
+              <li><a>Submenu 2</a></li>
+              <li><a>Submenu 3</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <a href="/logout"><button class="btn btn-secondary">Cerrar sesion</button></a>
+    </div>
+    <div class="navbar-center hidden lg:flex">
+      <ul class="menu menu-horizontal px-1">
+        <li><a href="/products">Productos</a></li>
+        <li tabindex="0">
+          <details>
+            <summary>Administrador</summary>
+            <ul class="p-2">
+              <li><a href="/realtimeproducts">Real Time Products</a></li>
+              <li><a href="/usersadmin">Gestión de Usuarios</a></li>
+            </ul>
+          </details>
+        </li>
+        <li tabindex="0">
+          <details>
+            <summary>Usuario</summary>
+            <ul class="p-2">
+              <li><a href="/profile">Datos Personales</a></li>
+              <li><a href="/documents">Carga de documentos</a></li>
+              <li><a href="/chat">Chat</a></li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </div>
+    <div class="navbar-end">
+      <a href="/carts/{{user.cart._id}}"><button
+          value="{{user.cart._id}}"
+          class="cartID btn btn-primary"
+        >CARRITO</button></a>
+    </div>
+  </div>
+  <div class="bg shadow-lg rounded p-8 max-w-md w-full space-y-6 mt-8">
+    <h2 class="text-center text-2xl font-bold">Datos personales</h2>
+    <div>
+      <label
+        for="firstName"
+        class="block text-white-700 text-sm font-bold mb-2"
+      >Nombre</label>
+      <input
+        type="text"
+        id="firstName"
+        class="form-input rounded w-full py-2 px-3 border border-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+        value="{{user.first_name}}"
+        disabled
+      />
+    </div>
+    <div>
+      <label
+        for="lastName"
+        class="block text-white-700 text-sm font-bold mb-2"
+      >Apellido</label>
+      <input
+        type="text"
+        id="lastName"
+        class="form-input rounded w-full py-2 px-3 border border-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+        value="{{user.last_name}}"
+        disabled
+      />
+    </div>
+    <div>
+      <label
+        for="email"
+        class="block text-white-700 text-sm font-bold mb-2"
+      >Email</label>
+      <input
+        type="email"
+        id="email"
+        class="form-input rounded w-full py-2 px-3 border border-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+        value="{{user.email}}"
+        disabled
+      />
+    </div>
+    <div>
+      <label
+        for="age"
+        class="block text-white-700 text-sm font-bold mb-2"
+      >Edad</label>
+      <input
+        type="text"
+        id="age"
+        class="form-input rounded w-full py-2 px-3 border border-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+        value="{{user.age}}"
+        disabled
+      />
+    </div>
+    <div>
+      <label
+        for="age"
+        class="block text-white-700 text-sm font-bold mb-2"
+      >Rol</label>
+      <input
+        type="text"
+        id="role"
+        class="form-input rounded w-full py-2 px-3 border border-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+        value="{{user.role}}"
+        disabled
+      />
+    </div>
+    <a
+      href="/forgot-password"
+      class="btn btn-primary w-full text-center"
+    >Cambiar Contraseña</a>
+    <a href="/products" class="btn btn-accent w-full text-center">Volver</a>
+  </div>
+</body>

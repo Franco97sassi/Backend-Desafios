@@ -1,12 +1,21 @@
 import CartServices from "../services/cart.js";
-import TicketServices from "../services/ticket.js"
+import ProductServices from "../services/products.js";
+import TicketServices from "../services/ticket.js";
+import PaymentServices from "../services/payments.js";
+import Stripe from "stripe";
+import config from "../config/config.js";
+import { calculateTotalAmount } from "../utils/index.js";
+import logger from "../utils/logger.js";
+
+const stripe = new Stripe(config.backend_stripe_key);
 
 const cartServices = new CartServices();
-const ticketServices = new TicketServices();
+const productServices = new ProductServices();
+const paymentServices = new PaymentServices();
 
 export const getCart = async (req, res) => {
   const cid = req.params.cid;
-
+  const uid = req.user;
   try {
     const cart = await cartServices.getCart(cid);
 
@@ -22,7 +31,7 @@ export const getCart = async (req, res) => {
       products: cart.products,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).send({
       status: "error",
       msg: "Error al obtener el carrito",
@@ -35,7 +44,7 @@ export const getCarts = async (req, res) => {
     const carts = await cartServices.getCarts();
     res.send({ status: "successful", carts });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).send({
       status: "error",
       msg: "Error al obtener los carritos",
@@ -46,8 +55,38 @@ export const getCarts = async (req, res) => {
 export const addProductToCart = async (req, res) => {
   const cid = req.params.cid;
   const pid = req.params.pid;
-
+  const user = req.user.email;
   try {
+    const product = await productServices.getProductById(pid);
+
+    if (!product) {
+      return res.status(404).send({
+        status: "error",
+        msg: "El producto no existe",
+      });
+    }
+
+    if (product.owner === user && req.user.role === "premium") {
+      return res.status(403).send({
+        status: "error",
+        msg: "No puedes agregar tu propio producto al carrito",
+      });
+    }
+
+    if (req.user.role === "admin") {
+      return res.status(403).send({
+        status: "error",
+        msg: "No puedes comprar siendo admin",
+      });
+    }
+
+    if (product.stock <= 0) {
+      return res.status(400).send({
+        status: "error",
+        msg: "No hay suficiente stock para este producto",
+      });
+    }
+
     const result = await cartServices.addProductToCart(pid, cid);
 
     if (!result.success) {
@@ -57,12 +96,12 @@ export const addProductToCart = async (req, res) => {
       });
     }
 
-    res.send({
+    return res.send({
       status: "successful",
       msg: result.message,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).send({
       status: "error",
       msg: "Error al agregar el producto al carrito",
@@ -83,7 +122,7 @@ export const createCart = async (req, res) => {
       cartId: cart._id,
       msg: "Carrito creado correctamente",
     });
-   } catch (error) {
+  } catch (error) {
     throw error;
   }
 };
@@ -109,14 +148,14 @@ export const deleteProductFromCart = async (req, res) => {
         .send({ status: "error", msg: updatedCart.message });
     }
 
-    res.send({
+    return res.send({
       status: "successful",
       msg: "Producto eliminado del carrito correctamente",
       cart: updatedCart.cart,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).send({
+    logger.error(error);
+    return res.status(500).send({
       status: "error",
       msg: "Error al eliminar el producto del carrito",
     });
@@ -150,7 +189,7 @@ export const updateCart = async (req, res) => {
       cart: updatedCart.cart,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res
       .status(500)
       .send({ status: "error", msg: "Error al actualizar el carrito" });
@@ -162,7 +201,11 @@ export const updateProductQuantity = async (req, res) => {
   const pid = req.params.pid;
   const quantity = req.body.quantity;
 
-  const updateResult = await cartServices.updateProductQuantity(cid, pid, quantity);
+  const updateResult = await cartServices.updateProductQuantity(
+    cid,
+    pid,
+    quantity
+  );
 
   if (!updateResult.success) {
     return res.status(404).send({
@@ -195,26 +238,87 @@ export const deleteAllProducts = async (req, res) => {
     message: deleteResult.message,
   });
 };
-//
+
 export const purchase = async (req, res) => {
+  let intent;
   try {
-    const cid=req.params.cid;
-    const uid=req.params.user.email
-    const {productsToPurchase,productsNotPurchase}=await cartServices.verifyPurchase(cid)
-    if(productsToPurchase===0)
-    {
+    const cid = req.params.cid;
+    const uid = req.user.email;
+    let { productsToPurchase, productsNotPurchase } =
+      await cartServices.verifyPurchase(cid);
+
+    if (productsToPurchase.length === 0) {
       return res.status(400).send({
-        status:"error",
-        message:productsToPurchase.message
-      }) }
-      const resultPurchase=await cartServices.processPurchase(productsToPurchase) 
-      const ticket= await ticketServices.createTicket(uid,productsToPurchase)
-      const resultUpdateCart= await cartServices.updateCart(cid,productsNotPurchase)
-      return res.send({message:"compra realizada exitosamente",payload:"ticket",newCart:resultUpdateCart})    
-    
+        status: "error",
+        message: productsToPurchase.message,
+      });
+    }
+
+    const resultPurchase = await cartServices.processPurchase(
+      productsToPurchase
+    );
+
+    intent = await stripe.paymentIntents.create({
+      amount: calculateTotalAmount(productsToPurchase) * 100,
+      currency: "usd",
+      payment_method_types: ["card"],
+      metadata: {
+        cart_id: cid,
+        user_id: uid,
+        productsToPurchase: JSON.stringify(productsToPurchase),
+        productsNotPurchase: JSON.stringify(productsNotPurchase),
+      },
+    });
+
+    return res.send({
+      status: "success",
+      client_secret: intent.client_secret,
+    });
   } catch (error) {
-return res
-.status(500)
-.send({message:`error en el proceso de compra. ${error}`})
+    return res
+      .status(500)
+      .send({ message: `Error en el proceso de compra. ${error}` });
   }
-}
+};
+
+export const purchaseDEV = async (req, res) => {
+  let cid;
+  let url;
+  try {
+    cid = req.params.cid;
+    const response = await paymentServices.createCheckout(cid);
+    if (response) {
+      url = response.url;
+      res.status(200).json({ url });
+    } else {
+      res
+        .status(400)
+        .json({ status: "error", msg: "No hay productos disponibles" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      msg: "No se pudo procesar la compra",
+      error: error,
+    });
+  }
+};
+
+export const purchaseDEVsuccess = async (req, res) => {
+  try {
+    const uEmail = req.user.email;
+    const cid = req.params.cid;
+    const result = await paymentServices.processPurchase(cid, uEmail);
+    res.render("success-payments", result);
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      msg: "No se pudo procesar el ticket",
+      error: error,
+    });
+  }
+};
+
+export const unprocessPurchase = async (req, res) => {
+  res.render("cancel-payments");
+};

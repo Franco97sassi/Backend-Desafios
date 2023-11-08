@@ -21,9 +21,22 @@ socket.on("messageLogs", (data) => {
   if (Array.isArray(data)) {
     for (let i = data.length - 1; i >= 0; i--) {
       const message = data[i];
-      messages += `<b>${message.user.toUpperCase()}</b>: ${
-        message.message
-      } <br>`;
+      messages += `
+        <div class="flex mb-4 ${message.user === "Tú" ? "justify-end" : ""}">
+          <div class="flex-shrink-0">
+            <img src="${
+              message.user === "Tú" ? "your-avatar.jpg" : "img/avatar.png"
+            }" alt="Avatar" class="w-10 h-10 rounded-full" />
+          </div>
+          <div class="${message.user === "Tú" ? "mr-3" : "ml-3"} ${
+        message.user === "Tú" ? "bg-green-100" : "bg-blue-100"
+      } p-3 rounded-lg">
+            <p class="text-sm font-medium ${
+              message.user === "Tú" ? "text-green-800" : "text-blue-800"
+            }">${message.user}</p>
+            <p class="text-sm text-gray-700">${message.message}</p>
+          </div>
+        </div>`;
     }
   } else {
     console.error("El objeto data no es un array");

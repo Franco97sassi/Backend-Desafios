@@ -37,6 +37,10 @@ const ProductSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  owner: {
+    type: String,
+    required: true,
+  },
 });
 ProductSchema.plugin(mongoosePaginate);
 export const productsModel = mongoose.model(productsCollection, ProductSchema);

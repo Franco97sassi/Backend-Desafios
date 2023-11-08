@@ -1,7 +1,5 @@
 const socket = io();
-socket.on("connect", () => {
-  console.log("Conexión establecida con el servidor de WebSocket");
-});
+socket.on("connect", () => {});
 socket.on("productAddError", (error) => {
   Swal.fire({
     icon: "error",
@@ -23,7 +21,7 @@ socket.on("productAddSuccess", () => {
 let log = document.getElementById("productList");
 
 const addProd = document.getElementById("addProduct");
-addProd.addEventListener("submit", (e) => {
+addProd.addEventListener("click", (e) => {
   e.preventDefault();
   if (e) {
     const title = document.getElementById("title").value;
@@ -33,6 +31,7 @@ addProd.addEventListener("submit", (e) => {
     const code = document.getElementById("code").value;
     const stock = document.getElementById("stock").value;
     const thumbnails = document.getElementById("thumbnails").value;
+    const owner = "admin";
     const newProd = {
       title,
       description,
@@ -41,6 +40,7 @@ addProd.addEventListener("submit", (e) => {
       code,
       stock,
       thumbnails,
+      owner,
     };
     socket.emit("product", newProd);
   }
@@ -91,4 +91,11 @@ socket.on("productList", (data) => {
   });
   const productListContainer = document.getElementById("productList");
   productListContainer.innerHTML = productListHTML;
+
+  Swal.fire({
+    icon: "success",
+    title: "Productos actualizados correctamente",
+    showConfirmButton: false,
+    timer: 1500,
+  });
 });

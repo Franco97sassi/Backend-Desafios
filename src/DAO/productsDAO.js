@@ -1,5 +1,6 @@
+import logger from "../utils/logger.js";
 import { productsModel } from "./db/model/products.model.js";
-import logger from "../utils/logger.js"
+
 class ProductManager {
   constructor() {
     this.model = productsModel;
@@ -41,7 +42,7 @@ class ProductManager {
         logger.info(`No se encontró ningún producto con el id: ${id}`);
       }
     } catch (error) {
-       logger.error(`${error}`);
+      logger.error(`${error}`);
     }
     return product;
   }
@@ -57,7 +58,8 @@ class ProductManager {
       }
       producto = await this.model.create(product);
     } catch (error) {
-      logger.error(`${error}`);    }
+      logger.error(`${error}`);
+    }
     return producto;
   }
 
@@ -66,7 +68,8 @@ class ProductManager {
     try {
       product = await this.model.updateOne({ _id: pid }, fields);
     } catch (error) {
-      logger.error(`${error}`);    }
+      logger.error(`${error}`);
+    }
     return product;
   }
 
@@ -75,7 +78,8 @@ class ProductManager {
     try {
       deletedProduct = await this.model.deleteOne({ _id: pid });
     } catch (error) {
-      logger.error(`${error}`);    }
+      logger.error(`${error}`);
+    }
     return deletedProduct;
   }
 
@@ -84,43 +88,10 @@ class ProductManager {
       const categories = await this.model.distinct("category");
       return categories;
     } catch (error) {
-      console.error("Error al obtener las categorías:", error);
+      logger.error("Error al obtener las categorías:", error);
       throw error;
     }
   }
-
-  // async deleteProductFromCart(pid, cid) {
-  //   try {
-  //     const filter = { _id: cid };
-  //     const update = {
-  //       $pull: {
-  //         products: { id: pid },
-  //       },
-  //     };
-
-  //     const updatedCart = await this.model.updateOne(filter, update);
-
-  //     if (updatedCart.modifiedCount === 0) {
-  //       return {
-  //         success: false,
-  //         message: "Carrito no encontrado",
-  //       };
-  //     }
-
-  //     const cart = await this.model.findById(cid);
-  //     return {
-  //       success: true,
-  //       message: "Producto eliminado del carrito",
-  //       cart,
-  //     };
-  //   } catch (error) {
-  //     console.error(error);
-  //     return {
-  //       success: false,
-  //       message: "Error al eliminar el producto del carrito",
-  //     };
-  //   }
-  // }
 }
 
 export default ProductManager;

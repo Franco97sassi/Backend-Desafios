@@ -1,0 +1,117 @@
+<div class="navbar bg-base-100 p-4">
+  <!-- ... Contenido de la barra de navegación ... -->
+  <div class="navbar-start">
+    <div class="dropdown">
+      <label tabindex="0" class="btn btn-ghost lg:hidden">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h8m-8 6h16"
+          /></svg>
+      </label>
+      <ul
+        tabindex="0"
+        class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+      >
+        <li><a>Item 1</a></li>
+        <li>
+          <a>Parent</a>
+          <ul class="p-2">
+            <li><a>Submenu 1</a></li>
+            <li><a>Submenu 2</a></li>
+          </ul>
+        </li>
+        <li>
+          <a>Parent2</a>
+          <ul class="p-2">
+            <li><a>Submenu 1</a></li>
+            <li><a>Submenu 2</a></li>
+            <li><a>Submenu 3</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <a href="/logout"><button class="btn btn-secondary">Cerrar sesion</button></a>
+  </div>
+  <div class="navbar-center hidden lg:flex">
+    <ul class="menu menu-horizontal px-1">
+      <li><a href="/products">Productos</a></li>
+      <li tabindex="0">
+        <details>
+          <summary>Administrador</summary>
+          <ul class="p-2">
+            <li><a href="/realtimeproducts">Real Time Products</a></li>
+            <li><a href="/usersadmin">Gestión de Usuarios</a></li>
+          </ul>
+        </details>
+      </li>
+      <li tabindex="0">
+        <details>
+          <summary>Usuario</summary>
+          <ul class="p-2">
+            <li><a href="/profile">Datos Personales</a></li>
+            <li><a href="/documents">Carga de documentos</a></li>
+            <li><a href="/chat">Chat</a></li>
+          </ul>
+        </details>
+      </li>
+    </ul>
+  </div>
+  <div class="navbar-end">
+
+  </div>
+</div>
+<div class="container mx-auto p-8">
+  <h1 class="text-3xl font-bold mb-4">Lista de Usuarios</h1>
+  <button onclick="deleteInactiveUsers()" class="btn btn-error mb-4">
+    Eliminar Usuarios Inactivos
+  </button>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Nombre Completo</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each users}}
+        <tr>
+          <td>{{this.full_name}}</td>
+          <td>{{this.email}}</td>
+          <td>{{this.role}}</td>
+          <td class="flex justify-between justify-between">
+            {{#if isEligibleForRoleChange}}
+              <button
+                onclick="changeUserRole('{{this._id}}')"
+                class="btn btn-primary"
+              >
+                Cambiar de rol
+              </button>
+            {{else}}
+              <p class="badge badge-sm self-center">No cuenta con la
+                Documentación</p>
+            {{/if}}
+            <button
+              onclick="deleteUser('{{this._id}}')"
+              class="btn btn-error mt-2"
+            >
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+<script src="/js/userAdmin.js">
+</script>

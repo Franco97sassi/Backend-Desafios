@@ -3,7 +3,7 @@ import userManager from "../src/DAO/sessionDAO.js";
 import Assert from "assert";
 
 mongoose.connect(
-  "mongodb+srv://coderhouse:Avenida1997@coderhouse.962imlr.mongodb.net/ecommerce"
+  "mongodb+srv://ltaralli:coder1234@cluster0.k7b3exc.mongodb.net/ecommerce"
 );
 
 const assert = Assert.strict;

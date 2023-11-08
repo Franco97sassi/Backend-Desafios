@@ -1,54 +1,133 @@
-<div id="cart-container" class="container container-cart">
-  <h1 class="cart-title">Carrito de compras</h1>
-  <h5>Carrito: <p class="cart-id"></p> </h5>
-  <table class="cart-table">
-    <thead>
-      <tr>
-        <th class="cart-table__header">Imagen</th>
-        <th class="cart-table__header">Título</th>
-        <th class="cart-table__header">Precio</th>
-        <th class="cart-table__header">Cantidad</th>
-        <th class="cart-table__header">Subtotal</th>
-        <th class="cart-table__header"></th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each products}}
-        <tr>
-          <td class="cart-table__image">
-            <img
-              src="{{this._id.thumbnails}}"
-              alt="{{this._id.title}}"
-              width="100"
-            />
-          </td>
-          <td class="cart-table__title">{{this._id.title}}</td>
-          <td class="cart-table__price">${{this._id.price}}</td>
-          <td class="cart-table__quantity">{{this.quantity}}u.</td>
-          <td class="cart-table__subtotal">${{multiply
-              this._id.price
-              this.quantity
-            }}</td>
-          <td class="cart-table__actions">
-            <button class="btn btn-danger btn-sm">
-              <i class="bi bi-trash">X</i>
-            </button>
-          </td>
+<header>
+  <script src="https://js.stripe.com/v3/"></script>
+</header>
+
+<div class="navbar bg-base-100 p-4">
+  <!-- ... Contenido de la barra de navegación ... -->
+    <div class="navbar-start">
+    <div class="dropdown">
+      <label tabindex="0" class="btn btn-ghost lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
+      </label>
+      <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+        <li><a>Item 1</a></li>
+        <li>
+          <a>Parent</a>
+          <ul class="p-2">
+            <li><a>Submenu 1</a></li>
+            <li><a>Submenu 2</a></li>
+          </ul>
+        </li>
+        <li>
+          <a>Parent2</a>
+          <ul class="p-2">
+            <li><a>Submenu 1</a></li>
+            <li><a>Submenu 2</a></li>
+            <li><a>Submenu 3</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <a href="/logout"><button class="btn btn-secondary">Cerrar sesion</button></a>
+  </div>
+  <div class="navbar-center hidden lg:flex">
+    <ul class="menu menu-horizontal px-1">
+      <li><a href="/products">Productos</a></li>
+      <li tabindex="0">
+        <details>
+          <summary>Administrador</summary>
+          <ul class="p-2">
+            <li><a href="/realtimeproducts">Real Time Products</a></li>
+            <li><a href="/usersadmin">Gestión de Usuarios</a></li>
+          </ul>
+        </details>
+      </li>
+      <li tabindex="0">
+        <details>
+          <summary>Usuario</summary>
+          <ul class="p-2">
+            <li><a href="/profile">Datos Personales</a></li>
+            <li><a href="/documents">Carga de documentos</a></li>
+            <li><a href="/chat">Chat</a></li>
+          </ul>
+        </details>
+      </li>
+    </ul>
+  </div>
+    <div class="navbar-end">
+  </div>
+</div>
+
+<div class="flex justify-center mt-8">
+<div
+  id="cart-container "
+  class="container mx-auto p-6 rounded-lg shadow-lg"
+>
+  <h1 class="text-2xl font-bold mb-4">Carrito de compras</h1>
+    <span class="font-bold cart-id"></span></h5>
+
+{{#if cart.products.length}}
+  <div class="overflow-x-auto">
+    <table class="table-auto w-full">
+      <thead>
+        <tr class="bg-100">
+          <th class="px-4 py-2">Imagen</th>
+          <th class="px-4 py-2">Título</th>
+          <th class="px-4 py-2">Precio</th>
+          <th class="px-4 py-2">Cantidad</th>
+          <th class="px-4 py-2">Subtotal</th>
+          <th></th>
         </tr>
-      {{/each}}
-      <tr>
-        <td colspan="5"></td>
-        <td class="cart-table__total">Total: ${{calculateTotal products}}</td>
-      </tr>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {{#each cart.products}}
+          <tr>
+            <td class="px-4 py-2">
+              <img
+                src="{{this._id.thumbnails}}"
+                alt="{{this._id.title}}"
+                width="100"
+                class="rounded"
+              />
+            </td>
+            <td class="px-4 py-2">{{this._id.title}}</td>
+            <td class="px-4 py-2">${{this._id.price}}</td>
+            <td class="px-4 py-2">{{this.quantity}}u.</td>
+            <td class="px-4 py-2">${{multiply
+                this._id.price
+                this.quantity
+              }}</td>
+            <td class="px-20 py-2">
+              <button onclick="deleteProduct('{{this._id._id}}')" class="btn btn-square btn-delete-product btn-sm btn-error">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </td>
+          </tr>
+        {{/each}}
+        <tr>
+          <td colspan="5"></td>
+          <td class="px-4 py-2 font-bold text-right">Total: ${{calculateTotal
+              cart.products
+            }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-<div class="cart-buttons"> 
-  <button class="btn btn-secondary"> <a href="/products">Regresar</a>  </button> 
-  <button class="btn btn-primary purchase-btn"> Finalizar Compra</a>  </button> 
-</div>
-    
+  <div class="flex justify-between mt-4">
+          <a href="/products"><button class="btn btn-secondary">Regresar</button></a>
+    <button class="btn btn-success" onclick="purchase('{{cart._id}}')">Finalizar
+      Compra</button>
+  </div>
+      {{else}}
+      <p class="text-center font-bold mt-4">El carrito está vacío.</p>
+        <div class="flex justify-center mt-4">
+          <a href="/products"><button class="btn btn-secondary">Regresar</button></a>
+        </div>
+    {{/if}}
 </div>
 
+
+<script src="/socket.io/socket.io.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/js/purchase.js"></script>
+<script src="/js/payment.js"></script>

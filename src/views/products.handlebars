@@ -1,98 +1,134 @@
-<div>
-  <div class="container text-center my-3">
-    <div class="jumbotron" style="background-color: green;color: white;">
-      {{!-- {{#if user.email!=adminCoder@coder.com }} --}}
-      <h1>USER OK LOGIN!</h1>
-      {{#if_eq user.email "adminCoder@coder.com"}}
-      <h2> Bienvenido Administrador;</h2>
-      <h2> tu rol es: admin</h2>
-      {{else}}
-
-      <h2> Bienvenido: usuario:{{user.first_name}} {{user.last_name}}</h2>
-
-      <h2> tu rol es: usuario </h2>
-      {{/if_eq}}
-      {{!-- {{else}} --}}
-      {{!-- {{/if}} --}}
-      <br>
-      <button class="btn btn-danger my-5" onclick="location.href='/logout'">LOGOUT</button>
-    </div>
-  </div>
-  <h1 class="text-center mt-4">Lista de Productos</h1>
-  <h5>Carrito: <p class="cart-id"></p>
-  </h5>
-  <section class="p-5">
-    <div class="row">
-
-      <form method="GET" action="/products" class="mb-3">
-        <div class="form-row">
-          <div class="form-group col-md-3">
-            <label for="limitSelect">Mostrar:</label>
-            <select name="limit" id="limitSelect" class="form-control">
-              <option value="10" {{#if_eq limit "10" }} selected{{/if_eq}}>10</option>
-              <option value="20" {{#if_eq limit "20" }} selected{{/if_eq}}>20</option>
-              <option value="50" {{#if_eq limit "50" }} selected{{/if_eq}}>50</option>
-            </select>
-          </div>
-          <div class="form-group col-md-3">
-            <label for="category">Categoría:</label>
-            <select name="category" id="category" class="form-control">
-              <option value="">Todas</option>
-              {{#each categories}}
-              <option value="{{name}}" {{#if selected}} selected{{/if}}>{{name}}</option>
-              {{/each}}
-            </select>
-          </div>
-          <div class="form-group col-md-3">
-            <label for="sortSelect">Ordenar por precio:</label>
-            <select name="sort" id="sortSelect" class="form-control">
-              <option value="asc" {{#if_eq sort "asc" }} selected{{/if_eq}}>Ascendente</option>
-              <option value="desc" {{#if_eq sort "desc" }} selected{{/if_eq}}>Descendente</option>
-            </select>
-          </div>
-          <div class="form-group col-md-3">
-            <button type="submit" class="btn btn-primary mt-4">Aplicar</button>
-          </div>
-        </div>
-      </form>
-
-      {{#each products}}
-      <div class="col-md-2">
-        <div class="card mb-2 product-card">
-          <img src="{{this.thumbnails}}" class="card-img-top" alt="Product Image" />
-          <div class="card-body">
-            <h5 class="card-title">{{this.title}}</h5>
-            <p class="card-text">{{this.description}}</p>
-          </div>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">Category: {{this.category}}</li>
-            <li class="list-group-item">Price: {{this.price}}</li>
-            <li class="list-group-item">Code: {{this.code}}</li>
-            <li class="list-group-item">Stock: {{this.stock}}</li>
+<div class="navbar bg-base-100 p-4">
+  <!-- ... Contenido de la barra de navegación ... -->
+    <div class="navbar-start">
+    <div class="dropdown">
+      <label tabindex="0" class="btn btn-ghost lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
+      </label>
+      <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+        <li><a>Item 1</a></li>
+        <li>
+          <a>Parent</a>
+          <ul class="p-2">
+            <li><a>Submenu 1</a></li>
+            <li><a>Submenu 2</a></li>
           </ul>
-          <div class="card-footer">
-            <button class="btn btn-primary add-to-cart-btn" data-product-id="{{this._id}}">Add to Cart({{this._id}})</button>
-          </div>
-        </div>
-      </div>
-      {{/each}}
-    </div>
-
-    <div class="pagination-container">
-      <ul class="pagination justify-content-center">
-        {{#if hasPrevPage}}
-        <li class="page-item"><a class="page-link" href="{{prevLink}}">Anterior</a></li>
-        {{/if}}
-        {{#if page}}
-        <li class="page-item disabled"><span class="page-link">{{page}}</span></li>
-        {{/if}}
-        {{#if hasNextPage}}
-        <li class="page-item"><a class="page-link" href="{{nextLink}}">Siguiente</a></li>
-        {{/if}}
+        </li>
+        <li>
+          <a>Parent2</a>
+          <ul class="p-2">
+            <li><a>Submenu 1</a></li>
+            <li><a>Submenu 2</a></li>
+            <li><a>Submenu 3</a></li>
+          </ul>
+        </li>
       </ul>
     </div>
-  </section>
+    <a href="/logout"><button class="btn btn-secondary">Cerrar sesion</button></a>
+  </div>
+  <div class="navbar-center hidden lg:flex">
+    <ul class="menu menu-horizontal px-1">
+      <li><a href="/products">Productos</a></li>
+      <li tabindex="0">
+        <details>
+          <summary>Administrador</summary>
+          <ul class="p-2">
+            <li><a href="/realtimeproducts">Real Time Products</a></li>
+            <li><a href="/usersadmin">Gestión de Usuarios</a></li>
+          </ul>
+        </details>
+      </li>
+      <li tabindex="0">
+        <details>
+          <summary>Usuario</summary>
+          <ul class="p-2">
+            <li><a href="/profile">Datos Personales</a></li>
+            <li><a href="/documents">Carga de documentos</a></li>
+            <li><a href="/chat">Chat</a></li>
+          </ul>
+        </details>
+      </li>
+    </ul>
+  </div>
+  <div class="navbar-end">
+    <a href="/carts/{{data.cart._id}}" ><button value="{{data.cart._id}}" class="cartID btn btn-primary">CARRITO</button></a>
+  </div>
+</div>
+
+{{#if data.user.first_name}}
+  <div class="chat chat-start self-start p-4 w-full md:w-1/4 px-2 mb-4">
+    <div class="chat-bubble">
+      <h6>Bienvenido, <b>{{data.user.first_name}}</b>! Tu rol es: <b>{{data.user.role}}</b></h6>
+    </div>
+  </div>
+{{/if}}
+
+<div class="container mx-auto p-4">
+  <form method="GET" action="/products" class="mb-6">
+    <div class="flex flex-wrap -mx-2">
+      <!-- ... Contenido del formulario de filtrado ... -->
+      <div class="w-full md:w-1/4 px-2 mb-4">
+              <label for="limitSelect" class="block text-sm font-medium text-white-700">Mostrar:</label>
+              <select name="limit" id="limitSelect" class="select select-primary w-full max-w-xs">
+                <option value="10" {{#if_eq limit "10"}} selected{{/if_eq}}>10</option>
+                <option value="20" {{#if_eq limit "20"}} selected{{/if_eq}}>20</option>
+                <option value="50" {{#if_eq limit "50"}} selected{{/if_eq}}>50</option>
+              </select>
+            </div>
+            <div class="w-full md:w-1/4 px-2 mb-4">
+              <label for="category" class="block text-sm font-medium text-white-700">Categoría:</label>
+              <select name="category" id="category" class="select select-primary w-full max-w-xs">
+                <option value="">Todas</option>
+                {{#each data.categories}}
+                  <option value="{{name}}"{{#if selected}} selected{{/if}}>{{name}}</option>
+                {{/each}}
+              </select>
+            </div>
+            <div class="w-full md:w-1/4 px-2 mb-4">
+              <label for="sortSelect" class="block text-sm font-medium text-white-700">Ordenar por precio:</label>
+              <select name="sort" id="sortSelect" class="select select-primary w-full max-w-xs">
+                <option value="asc" {{#if_eq sort "asc"}} selected{{/if_eq}}>Ascendente</option>
+                <option value="desc" {{#if_eq sort "desc"}} selected{{/if_eq}}>Descendente</option>
+              </select>
+            </div>
+            <div class="w-full md:w-1/4 px-2 mb-4 flex items-center">
+              <button type="submit" class="btn btn-primary mt-5">Aplicar</button>
+              </div>
+    </div>
+  </form>
+
+  <h1 class="text-2xl text-center font-bold mb-8">Lista de Productos</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <!-- ... Contenido de la lista de productos ... -->
+     {{#each data.products}}
+            <div class="card card-compact w-72  shadow-xl">
+              <figure class="px-15 max-h-80"><img src="{{this.thumbnails}}" alt={{this.category}} /></figure>
+              <div class="card-body">
+                <h2 class="card-title">{{this.title}}</h2>
+                <div class="badge badge-secondary">Owner: {{this.owner}}</div>
+                <p>{{this.description}}</p>
+                <div class="card-actions justify-end">
+                  <div class="badge badge-outline">{{this.category}}</div> 
+                  <div class="badge badge-outline">Stock: {{this.stock}}</div>
+                </div>
+                <button class="add-to-cart-btn btn btn-primary" data-product-id="{{this._id}}">Add to Cart</button>
+              </div>
+            </div>
+          {{/each}}
+  </div>
+
+  <div class="flex justify-center mt-8">
+    {{#if data.hasPrevPage}}
+      <a class="page-link" href="{{data.prevLink}}"><Anterior class="btn mr-2">Anterior</button></a>
+    {{/if}}
+    {{#if data.page}}
+      <button class="btn">{{data.page}}</button>
+    {{/if}}
+    {{#if data.hasNextPage}}
+     <a class="page-link" href="{{data.nextLink}}"> <Siguiente class="btn ml-2">Siguiente</button></a>
+    {{/if}}
+  </div>
 </div>
 
 <script src="/js/addProduct.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -127,6 +127,7 @@ paths:
                 $ref: "#components/schemas/Products"
         "500":
           description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo de conexión con la base de datos
+
     delete:
       summary: Elimina un producto
       tags:
@@ -182,7 +183,7 @@ components:
         code: SUPERSTAR
         stock: 781
         thumbnails: https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/7ed0855435194229a525aad6009a0497_9366/Zapatillas_Superstar_Blanco_EG4958_01_standard.jpg
-        owner: franco.sassi97@gmail.com
+        owner: lisandrotaralli@gmail.com
         status: true
   requestBodies:
     productsInput:

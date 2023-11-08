@@ -1,50 +1,63 @@
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-  <title>Login</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/estilos.css">
-
-</head>
-
-<body>
-
-  <div class="container my-5">
-    <div class="jumbotron">
-
-      <h1>LOGIN</h1>
-      {{!-- <h2><i>Contraseña cambiada para user: {{ user.email }}</i></h2> --}}
-      <br>
-      <form class="form" action="/api/session/login" method="post" role="form" autocomplete="off">
-
-        <div class="form-group">
-          <input id="email" name='email' placeholder="usuario" class="form-control" type="text" required>
-        </div>
-
-        <div class="form-group">
-          <input id="password" name='password' placeholder="password" class="form-control" type="password" required>
-        </div>
-
-        <div class="form-group">
-          <input class="btn btn-success my-3" type="submit" value="Login">
-        </div>
-      </form>
-
-      <hr>
-      <div class="text-left">
-        <button class="btn btn-success my-3" onclick="location.href = '/register'">Ir a Register</button>
-        <button class="btn btn-success my-3" onclick="location.href = '/api/session/restore'">Restaurar contraseña</button>
-         <a href="/forgot-password" class="btn btn-primary">Recuperar Contraseña</a>
-
-      <a href="/github"><button>Entrar con Github</button></a>
+<div class="container100vh flex justify-center items-center">
+  <div class="form-container-login">
+    <p class="title-login">Login</p>
+    <form
+      class="form-login"
+      id="login-form"
+      method="POST"
+      action="/api/session/login"
+      class="needs-validation-login"
+      novalidate
+    >
+      <div class="input-group-login">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          placeholder="example@mail.com"
+        />
       </div>
+      <div class="input-group-login">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="*********"
+        />
+        <div class="forgot-login">
+          <a rel="noopener noreferrer" href="/forgot-password">Recuperar
+            contraseña</a>
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="sign-login btn btn-outline btn-primary"
+      >Iniciar Sesión</button>
+    </form>
+    <div class="social-message-login">
+      <div class="line-login"></div>
+      <p class="message-login">Iniciar con redes sociales</p>
+      <div class="line-login"></div>
     </div>
-  </div>
-</body>
+    <div class="social-icons-login">
+      <button aria-label="Log in with GitHub" class="icon-login">
+        <a href="/api/session/github" class="btn btn-primary">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 32 32"
+            class="w-5 h-5 fill-current"
+          >
+            <path
+              d="M16 0.396c-8.839 0-16 7.167-16 16 0 7.073 4.584 13.068 10.937 15.183 0.803 0.151 1.093-0.344 1.093-0.772 0-0.38-0.009-1.385-0.015-2.719-4.453 0.964-5.391-2.151-5.391-2.151-0.729-1.844-1.781-2.339-1.781-2.339-1.448-0.989 0.115-0.968 0.115-0.968 1.604 0.109 2.448 1.645 2.448 1.645 1.427 2.448 3.744 1.74 4.661 1.328 0.14-1.031 0.557-1.74 1.011-2.135-3.552-0.401-7.287-1.776-7.287-7.907 0-1.751 0.62-3.177 1.645-4.297-0.177-0.401-0.719-2.031 0.141-4.235 0 0 1.339-0.427 4.4 1.641 1.281-0.355 2.641-0.532 4-0.541 1.36 0.009 2.719 0.187 4 0.541 3.043-2.068 4.381-1.641 4.381-1.641 0.859 2.204 0.317 3.833 0.161 4.235 1.015 1.12 1.635 2.547 1.635 4.297 0 6.145-3.74 7.5-7.296 7.891 0.556 0.479 1.077 1.464 1.077 2.959 0 2.14-0.020 3.864-0.020 4.385 0 0.416 0.28 0.916 1.104 0.755 6.4-2.093 10.979-8.093 10.979-15.156 0-8.833-7.161-16-16-16z"
+            ></path>
+          </svg></a>
 
-</html>
+      </button>
+    </div>
+    <p class="signup-login">No tienes una cuenta?
+      <a rel="noopener noreferrer" href="/register" class="">Registrate</a>
+    </p>
+  </div>
+</div>

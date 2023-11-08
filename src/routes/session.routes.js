@@ -1,4 +1,3 @@
- 
 import { Router } from "express";
 import passport from "passport";
 import {
@@ -6,23 +5,17 @@ import {
   login,
   github,
   githubCallback,
-  current,  forgotPassword,
+  current,
+  forgotPassword,
   resetPassword,
 } from "../controllers/session.js";
+import { auth } from "../utils/jwt.js";
 
 const sessionRouter = Router();
 
-sessionRouter.post(
-  "/register",
-  passport.authenticate("register", { failureRedirect: "/failregister" }),
-  register
-);
+sessionRouter.post("/register", register);
 
-sessionRouter.post(
-  "/login",
-  passport.authenticate("login", { failureRedirect: "/faillogin" }),
-  login
-);
+sessionRouter.post("/login", login);
 
 sessionRouter.get(
   "/github",
@@ -32,11 +25,15 @@ sessionRouter.get(
 
 sessionRouter.get(
   "/githubcallback",
-  passport.authenticate("github", { failureRedirect: "/login" }),
+  passport.authenticate("github", {
+    failureRedirect: "/login",
+    session: false,
+  }),
   githubCallback
 );
 
-sessionRouter.get("/current", current);
+sessionRouter.get("/current", auth, current);
 sessionRouter.post("/forgot-password", forgotPassword);
 sessionRouter.post("/reset-password", resetPassword);
+
 export default sessionRouter;

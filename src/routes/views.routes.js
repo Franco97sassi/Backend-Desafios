@@ -1,4 +1,3 @@
- 
 import { Router } from "express";
 import {
   getProducts,
@@ -14,26 +13,28 @@ import {
   failLogin,
   getTicketByOrder,
   getProductsMocks,
-  loggerTest,forgotPass,
+  loggerTest,
+  forgotPass,
   resetPass,
+  home,
+  uploadDocuments,
+  getUsers,
 } from "../controllers/views.js";
-import { authMiddleware, isAdmin, isUser } from "../middlewares/auth.js";
+import { isAdmin, isUser } from "../middlewares/auth.js";
+import { auth } from "../utils/jwt.js";
 
 const viewsRouter = Router();
-const sessionRouter = Router();
- 
-viewsRouter.get("/", getProducts);
-viewsRouter.get("/chat",authMiddleware,isUser, getChat);
-viewsRouter.get("/realtimeproducts",authMiddleware,isAdmin, getProductsRealTime);
-viewsRouter.get("/products", authMiddleware, getProductsViews);
+
+viewsRouter.get("/", home);
+viewsRouter.get("/productList", getProducts);
+viewsRouter.get("/chat", auth, isUser, getChat);
+viewsRouter.get("/realtimeproducts", auth, isAdmin, getProductsRealTime);
+viewsRouter.get("/products", auth, getProductsViews);
 viewsRouter.get("/carts/:cid", getCart);
 viewsRouter.get("/carts/:cid/:tcode", getTicketByOrder);
-
 viewsRouter.get("/login", login);
-viewsRouter.post("/login", sessionRouter);
 viewsRouter.get("/register", register);
-viewsRouter.post("/register", sessionRouter);
-viewsRouter.get("/profile", authMiddleware, profile);
+viewsRouter.get("/profile", auth, profile);
 viewsRouter.get("/logout", logout);
 viewsRouter.get("/failregister", failRegister);
 viewsRouter.get("/faillogin", failLogin);
@@ -41,5 +42,6 @@ viewsRouter.get("/mockingproducts", getProductsMocks);
 viewsRouter.get("/loggerTest", loggerTest);
 viewsRouter.get("/forgot-password", forgotPass);
 viewsRouter.get("/reset-password", resetPass);
-
+viewsRouter.get("/documents", auth, uploadDocuments);
+viewsRouter.get("/usersadmin", auth, isAdmin, getUsers);
 export default viewsRouter;

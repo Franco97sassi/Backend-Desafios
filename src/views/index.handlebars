@@ -1,40 +1,38 @@
-<div>
-    <div class="text-center">
-        <button class="btn btn-success my-3" onclick="location.href = '/login'">Ir a Login</button>
-      </div>
-  <h1 class="text-center mt-4">Lista de Productos</h1>
+<div class="container mx-auto">
+  <h1 class="text-center mt-4 text-3xl font-bold">Lista de Productos</h1>
   <section class="p-5">
-    <table class="table table-hover">
+    <table class="min-w-full bg border border-gray-300">
       <thead>
-        <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Category</th>
-          <th>Price</th>
-          <th>Code</th>
-          <th>Stock</th>
-          <th>Status</th>
-          {{!-- <th>Thumbnails</th> --}}
+        <tr class="bg-gray-100 border-b">
+          <th class="py-2 px-4 border-r">ID</th>
+          <th class="py-2 px-4 border-r">Title</th>
+          <th class="py-2 px-4 border-r">Description</th>
+          <th class="py-2 px-4 border-r">Category</th>
+          <th class="py-2 px-4 border-r">Price</th>
+          <th class="py-2 px-4 border-r">Code</th>
+          <th class="py-2 px-4 border-r">Stock</th>
+          <th class="py-2 px-4 border-r">Status</th>
+          <th class="py-2 px-4">Thumbnails</th>
         </tr>
       </thead>
       <tbody>
         {{#each products}}
-          <tr>
-            <td>{{this.id}}</td>
-            <td>{{this.title}}</td>
-            <td>{{this.description}}</td>
-            <td>{{this.category}}</td>
-            <td>{{this.price}}</td>
-            <td>{{this.code}}</td>
-            <td>{{this.stock}}</td>
-            <td>{{this.status}}</td>
-            {{!-- <td>
+          <tr class="border-b">
+            <td class="py-2 px-4">{{this.id}}</td>
+            <td class="py-2 px-4">{{this.title}}</td>
+            <td class="py-2 px-4">{{this.description}}</td>
+            <td class="py-2 px-4">{{this.category}}</td>
+            <td class="py-2 px-4">{{this.price}}</td>
+            <td class="py-2 px-4">{{this.code}}</td>
+            <td class="py-2 px-4">{{this.stock}}</td>
+            <td class="py-2 px-4">{{this.status}}</td>
+            <td class="py-2 px-4">
               <img
-                width="100px"
+                class="w-24 h-24 object-cover"
                 src="{{this.thumbnails}}"
                 alt="{{this.title}}"
-              /></td> --}}
+              />
+            </td>
           </tr>
         {{/each}}
       </tbody>

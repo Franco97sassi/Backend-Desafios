@@ -8,44 +8,50 @@ import ProductManager from "./src/DAO/productsDAO.js";
 import MessagesManager from "./src/DAO/messagesDAO.js";
 import cartRouter from "./src/routes/cart.routes.js";
 import productsRouter from "./src/routes/products.routes.js";
-import chatRouter from "./src/routes/chat.routes.js";
 import viewsRouter from "./src/routes/views.routes.js";
 import sessionRouter from "./src/routes/session.routes.js";
 import session from "express-session";
-import MongoStore from 'connect-mongo';
-import initializePassport from "./src/config/passport-config.js";
+import MongoStore from "connect-mongo";
 import passport from "passport";
+import initializePassport from "./src/config/passport.config.js";
+import config from "./src/config/config.js";
+import errorHandler from "./src/middlewares/errors/index.js";
+import { addLogger } from "./src/utils/logger.js";
+import logger from "./src/utils/logger.js";
+import usersRouter from "./src/routes/users.routes.js";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
+import { swaggerOptions } from "./src/utils/swagger-options.js";
+import cors from "cors";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import paymentsRouter from "./src/routes/payments.routes.js";
 import cookieParser from "cookie-parser";
-import config from "./src/config/config.js"
-import errorHandle from "./src/middlewares/errors/index.js"
-import{addLogger} from "./src/utils/logger.js"
-import logger from "./src/utils/logger.js"
-import swaggerJsDoc from 'swagger-jsdoc';
-import swaggerUiExpress from 'swagger-ui-express';
-import { swaggerOptions } from './src/docs/utils/swagger-options.js';
+import bodyParser from "body-parser";
 
- //variables de entorno
-const PORT=config.port||8081
-const MONGO_URL=config.mongoURL
-const SECRET=config.secret
+const __filename = fileURLToPath(import.meta.url);
+export const __dirname = dirname(__filename);
+
+// VARIABLES DE ENTORNO
+const PORT = config.port;
+const mongoURL = config.mongoUrl;
+const sessionSecret = config.sessionSecret;
+const baseURL = config.baseURL;
 
 const app = express();
-const specs = swaggerJsDoc(swaggerOptions);
+const specs = swaggerJSDoc(swaggerOptions);
 
-  
- 
-mongoose.connect(MONGO_URL)
-.then(() => console.log("Conexión exitosa a la base de datos."))
-    .catch((error) => console.error("Error de conexión:", error));   
-// "mongodb+srv://ltaralli:coder1234@cluster0.k7b3exc.mongodb.net/ecommerce",
-
-app.use(addLogger)
+app.use(
+  bodyParser.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
+app.use(addLogger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser())
-
 app.use(express.static("public"));
- 
 app.engine(
   "handlebars",
   handlebars.engine({
@@ -60,48 +66,57 @@ app.engine(
     },
   })
 );
-// initializePassport(passport);
-initializePassport(passport);
+// app.use(
+//   session({
+//     store: MongoStore.create({
+//       mongoUrl: mongoURL,
+//       mongoOptions: {
+//         useNewUrlParser: true,
+//         useUnifiedTopology: true,
+//       },
+//       ttl: 250,
+//     }),
+//     secret: sessionSecret,
+//     resave: false,
+//     saveUninitialized: false,
+//   })
+// );
+app.use(cookieParser());
+initializePassport();
 
-app.use(session({
-  store: MongoStore.create({
-      mongoUrl:
-   'mongodb+srv://francosassi97:Avenida1997@coderhouse.962imlr.mongodb.net/ecommerce',
-      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-      // ttl: 3600,
-  }),
-   
-  secret: SECRET,
-  resave: false,
-  saveUninitialized: false,
-}))
 app.use(passport.initialize());
-app.use(passport.session())
+// app.use(passport.session());
+app.use(cors());
 
-app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 app.set("views", "./src/views");
 app.set("view engine", "handlebars");
-
-//ROUTES
 app.use("/api/products", productsRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/session", sessionRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/payments", paymentsRouter);
 app.use("/", viewsRouter);
-app.use(errorHandle)
-//Listen
+app.use(errorHandler);
+
 const server = app.listen(PORT, () =>
-  logger.info(`server running on port ${server.address().port}`)
+  logger.info(`Corriendo en el puerto: ${server.address().port}`)
 );
- 
-// const db = mongoose.connection;
 
-// db.on("error", (error) => {
-//   console.error("Error de conexión:", error);
-// });
+mongoose.connect(mongoURL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-// db.once("open", () => {
-//   logger.log("Conexión exitosa a la base de datos.");
-// });
+const db = mongoose.connection;
+
+db.on("error", (error) => {
+  logger.error("Error de conexión:", error);
+});
+
+db.once("open", () => {
+  logger.info("Conexión exitosa a la base de datos.");
+});
 
 const io = new Server(server);
 const manager = new ProductManager();
@@ -109,10 +124,12 @@ const managerMsg = new MessagesManager();
 const message = [];
 
 io.on("connection", async (socket) => {
-  logger.log("nuevo cliente conectado");
+  const user = socket.request.user;
+
+  logger.info("nuevo cliente conectado");
   const products = await manager.getProducts();
   io.emit("productList", products);
-  
+
   socket.on("product", async (newProd) => {
     const resultAdd = await manager.addProduct(newProd);
     if (resultAdd.error) {
@@ -144,6 +161,27 @@ io.on("connection", async (socket) => {
       throw error;
     }
   });
+
+  socket.on("purchase", async (cid) => {
+    try {
+      const response = await fetch(`${baseURL}/api/cart/${cid}/purchase`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "same-origin",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        socket.emit("purchase-success", data);
+      } else {
+        logger.error("Error en la compra:", response.statusText);
+        socket.emit("purchase-cancel");
+      }
+    } catch (error) {
+      logger.error("Error:", error);
+    }
+  });
 });
 
- 
+export default app;

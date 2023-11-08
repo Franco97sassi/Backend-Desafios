@@ -1,4 +1,3 @@
- 
 import { Router } from "express";
 import {
   getProducts,
@@ -7,13 +6,14 @@ import {
   updateProduct,
   deletedProduct,
 } from "../controllers/products.js";
+import { auth } from "../utils/jwt.js";
 
 const productsRouter = Router();
 
 productsRouter.get("/", getProducts);
 productsRouter.get("/:pid", getProductById);
-productsRouter.post("/", addProduct);
-productsRouter.put("/:pid", updateProduct);
-productsRouter.delete("/:pid", deletedProduct);
+productsRouter.post("/", auth, addProduct);
+productsRouter.put("/:pid", auth, updateProduct);
+productsRouter.delete("/:pid", auth, deletedProduct);
 
 export default productsRouter;
