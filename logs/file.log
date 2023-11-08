@@ -51,3 +51,4 @@
 {"level":"error","message":"Error en la compra:"}
 {"level":"error","message":"Error en la compra:"}
 {"level":"error","message":"Error en la compra:"}
+{"level":"error","message":"Error: self-signed certificate in certificate chain"}
