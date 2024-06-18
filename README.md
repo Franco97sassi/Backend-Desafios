@@ -1,5 +1,7 @@
 # Entrega Proyecto Final - Backend CoderHouse - Comisión 51400
-
+ <a href="https://backend-desafios.onrender.com/">
+ <img src="https://i.imgur.com/5X1dXCl.png" alt="Fondo" width="100%" />
+</a>
 ## Descripción del Proyecto
 
 El proyecto permite a los usuarios una experiencia completa de compra de productos de un comercio electrónico, y un panel administrador para la gestión de productos y usuarios.
